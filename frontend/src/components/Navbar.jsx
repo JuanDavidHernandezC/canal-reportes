@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -27,6 +28,11 @@ export default function Navbar() {
       <Link to="/" style={{ color:'white', fontWeight:600, fontSize:18, textDecoration:'none' }}>
         📍 Canal Reportes
       </Link>
+      {user && ['operario','admin'].includes(user.rol) && (
+        <Link to="/operario" style={{ color:'#AED6F1', fontSize:14, textDecoration:'none' }}>
+          Panel operario
+        </Link>
+      )}
       {user && (
         <div style={{ display:'flex', alignItems:'center', gap:16 }}>
           <span style={{
