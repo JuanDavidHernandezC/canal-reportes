@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -12,10 +11,10 @@ export default function Navbar() {
   }
 
   const rolColor = {
-    ciudadano: '#1D9E75',
-    operario:  '#185FA5',
-    admin:     '#7B241C',
-    planeacion:'#6C3483',
+    ciudadano:  '#1D9E75',
+    operario:   '#185FA5',
+    admin:      '#7B241C',
+    planeacion: '#6C3483',
   };
 
   return (
@@ -25,14 +24,17 @@ export default function Navbar() {
       height:'56px', position:'sticky', top:0, zIndex:100,
       boxShadow:'0 2px 8px rgba(0,0,0,0.3)'
     }}>
-      <Link to="/" style={{ color:'white', fontWeight:600, fontSize:18, textDecoration:'none' }}>
-        📍 Canal Reportes
-      </Link>
-      {user && ['operario','admin'].includes(user.rol) && (
-        <Link to="/operario" style={{ color:'#AED6F1', fontSize:14, textDecoration:'none' }}>
-          Panel operario
+      <div style={{ display:'flex', alignItems:'center', gap:24 }}>
+        <Link to="/" style={{ color:'white', fontWeight:600, fontSize:18, textDecoration:'none' }}>
+          📍 Canal Reportes
         </Link>
-      )}
+        {user && ['operario','admin'].includes(user.rol) && (
+          <Link to="/operario" style={{ color:'#AED6F1', fontSize:14, textDecoration:'none' }}>
+            Panel operario
+          </Link>
+        )}
+      </div>
+
       {user && (
         <div style={{ display:'flex', alignItems:'center', gap:16 }}>
           <span style={{
