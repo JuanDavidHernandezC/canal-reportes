@@ -5,7 +5,7 @@ const { getAll, getOne, create, updateStatus } = require('../controllers/reports
 const { verifyToken, requireRole } = require('../middleware/auth.middleware');
 
 const storage = multer.diskStorage({
-  destination: 'uploads/',
+  destination: path.join(__dirname, '../../uploads'),
   filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
 });
 const upload = multer({ storage });
