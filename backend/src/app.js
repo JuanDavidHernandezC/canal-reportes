@@ -14,7 +14,7 @@ const io = new Server(server, {
 // Middlewares
 app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 
 // Rutas
 app.use('/api/auth',     require('./routes/auth.routes'));
