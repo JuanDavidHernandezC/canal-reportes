@@ -108,8 +108,17 @@ export default function ReporteDetalle() {
 
         {/* Foto si existe */}
         {reporte.foto_url && (
-          <img src={`${import.meta.env.VITE_API_URL?.replace('/api','')}${reporte.foto_url}`} alt="Foto Reporte"
-            style={{ width:'100%', borderRadius:10, marginTop:16, maxHeight:300, objectFit:'cover' }} />
+          <img 
+            src={reporte.foto_url.startsWith('http') 
+              ? reporte.foto_url 
+              : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${reporte.foto_url}`} 
+            alt="Foto Reporte"
+            style={{ width:'100%', borderRadius:10, marginTop:16, maxHeight:300, objectFit:'cover' }}
+            onError={(e) => {
+              e.target.style.display = 'none';
+              e.target.parentElement.innerHTML += '<p style="color:red; margin-top:10px">Error al cargar la imagen</p>';
+            }}
+          />
         )}
 
         {/* Ubicación si existe */}
