@@ -57,6 +57,11 @@ export default function ReporteDetalle() {
   if (loading) return <div style={{ padding:40, textAlign:'center', color:'var(--color-text-tertiary)' }}>Cargando...</div>;
   if (!reporte) return null;
 
+  const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:3001/api').replace(/\/api\/?$/, '');
+  const imageUrl = reporte.foto_url?.startsWith('http')
+    ? reporte.foto_url
+    : `${apiBase}${reporte.foto_url}`;
+
   const est = estadoColor[reporte.estado] || { bg:'#555', label: reporte.estado };
   const canChangeStatus = ['operario','admin'].includes(user?.rol);
 
@@ -108,7 +113,7 @@ export default function ReporteDetalle() {
 
         {/* Foto si existe */}
         {reporte.foto_url && (
-          <img src={`${import.meta.env.VITE_API_URL?.replace('/api','')}${reporte.foto_url}`} alt="Foto Reporte"
+          <img src={imageUrl} alt="Foto Reporte"
             style={{ width:'100%', borderRadius:10, marginTop:16, maxHeight:300, objectFit:'cover' }} />
         )}
 
