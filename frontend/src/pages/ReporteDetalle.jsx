@@ -108,7 +108,7 @@ export default function ReporteDetalle() {
 
         {/* Foto si existe */}
         {reporte.foto_url && (
-          <img src={`http://localhost:3001${reporte.foto_url}`} alt="foto reporte"
+          <img src={`${import.meta.env.VITE_API_URL?.replace('/api','')}${reporte.foto_url}`} alt="Foto Reporte"
             style={{ width:'100%', borderRadius:10, marginTop:16, maxHeight:300, objectFit:'cover' }} />
         )}
 
