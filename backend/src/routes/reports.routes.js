@@ -1,14 +1,7 @@
 const router = require('express').Router();
-const multer = require('multer');
-const path = require('path');
 const { getAll, getOne, create, updateStatus } = require('../controllers/reports.controller');
 const { verifyToken, requireRole } = require('../middleware/auth.middleware');
-
-const storage = multer.diskStorage({
-  destination: path.join(__dirname, '../../uploads'),
-  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
-});
-const upload = multer({ storage });
+const { upload } = require('../config/cloudinary');
 
 router.get('/',    verifyToken, getAll);
 router.get('/:id', verifyToken, getOne);

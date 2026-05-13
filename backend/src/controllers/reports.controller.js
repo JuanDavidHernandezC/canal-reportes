@@ -32,7 +32,7 @@ async function getOne(req, res) {
 
 async function create(req, res) {
   const { titulo, descripcion, tipo, latitud, longitud } = req.body;
-  const foto_url = req.file ? `/uploads/${req.file.filename}` : null;
+  const foto_url = req.file ? req.file.path : null;
   try {
     const result = await pool.query(
       `INSERT INTO reportes (titulo, descripcion, tipo, latitud, longitud, foto_url, ciudadano_id)
