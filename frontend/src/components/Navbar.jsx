@@ -33,6 +33,14 @@ export default function Navbar() {
             Panel operario
           </Link>
         )}
+        {user && user.rol === 'admin' && (
+          <Link to="/admin" style={{ color:'#AED6F1', fontSize:14, textDecoration:'none' }}>
+            Panel admin
+          </Link>
+        )}
+        <Link to="/inicio" style={{ color:'#AED6F1', fontSize:14, textDecoration:'none' }}>
+          Ver mapa público
+        </Link>
       </div>
 
       {user && (
