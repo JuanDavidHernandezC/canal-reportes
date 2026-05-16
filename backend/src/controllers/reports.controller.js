@@ -1,5 +1,6 @@
 const pool = require('../models/db');
 const { notificarNuevoReporte, notificarOperarios, notificarCambioEstado } = require('../services/email');
+const { telegramNuevoReporte, telegramCambioEstado, telegramReporteEditado } = require('../services/telegram');
 
 async function getAll(req, res) {
   try {
@@ -42,13 +43,12 @@ async function create(req, res) {
     );
     const reporte = result.rows[0];
 
-    // Datos del ciudadano que creó el reporte
     const ciudadano = await pool.query(
       'SELECT nombre, email FROM usuarios WHERE id=$1',
       [req.user.id]
     );
 
-    // Email de confirmación al ciudadano
+    // Email al ciudadano
     notificarNuevoReporte({
       ciudadanoEmail:  ciudadano.rows[0].email,
       ciudadanoNombre: ciudadano.rows[0].nombre,
@@ -57,14 +57,13 @@ async function create(req, res) {
       tipo:            reporte.tipo,
     }).catch(err => console.error('Email ciudadano:', err.message));
 
-    // Email de alerta a todos los operarios y admins
+    // Email a operarios
     const operarios = await pool.query(
       `SELECT email FROM usuarios WHERE rol IN ('operario', 'admin')`
     );
     if (operarios.rows.length > 0) {
-      const emails = operarios.rows.map(o => o.email);
       notificarOperarios({
-        operariosEmails: emails,
+        operariosEmails: operarios.rows.map(o => o.email),
         ciudadanoNombre: ciudadano.rows[0].nombre,
         reporteId:       reporte.id,
         titulo:          reporte.titulo,
@@ -72,6 +71,14 @@ async function create(req, res) {
         descripcion:     reporte.descripcion,
       }).catch(err => console.error('Email operarios:', err.message));
     }
+
+    // Telegram
+    telegramNuevoReporte({
+      ciudadanoNombre: ciudadano.rows[0].nombre,
+      reporteId:       reporte.id,
+      titulo:          reporte.titulo,
+      tipo:            reporte.tipo,
+    }).catch(err => console.error('Telegram nuevo reporte:', err.message));
 
     res.status(201).json(reporte);
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -96,13 +103,14 @@ async function updateStatus(req, res) {
       [req.params.id, prev.rows[0].estado, estado, req.user.id]
     );
 
-    // Email al ciudadano dueño del reporte
     const info = await pool.query(
       `SELECT u.nombre, u.email, r.titulo
        FROM reportes r JOIN usuarios u ON r.ciudadano_id = u.id
        WHERE r.id=$1`,
       [req.params.id]
     );
+
+    // Email al ciudadano
     notificarCambioEstado({
       ciudadanoEmail:  info.rows[0].email,
       ciudadanoNombre: info.rows[0].nombre,
@@ -110,6 +118,14 @@ async function updateStatus(req, res) {
       titulo:          info.rows[0].titulo,
       estado,
     }).catch(err => console.error('Email cambio estado:', err.message));
+
+    // Telegram
+    telegramCambioEstado({
+      ciudadanoNombre: info.rows[0].nombre,
+      reporteId:       req.params.id,
+      titulo:          info.rows[0].titulo,
+      estado,
+    }).catch(err => console.error('Telegram cambio estado:', err.message));
 
     res.json({ message: 'Estado actualizado', estado });
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -135,11 +151,12 @@ async function updateReport(req, res) {
       [titulo, descripcion, tipo, req.params.id]
     );
 
-    // Email de notificación al editar
     const ciudadano = await pool.query(
       'SELECT nombre, email FROM usuarios WHERE id=$1',
       [req.user.id]
     );
+
+    // Email
     notificarNuevoReporte({
       ciudadanoEmail:  ciudadano.rows[0].email,
       ciudadanoNombre: ciudadano.rows[0].nombre,
@@ -147,6 +164,13 @@ async function updateReport(req, res) {
       titulo:          result.rows[0].titulo,
       tipo:            result.rows[0].tipo,
     }).catch(err => console.error('Email edicion:', err.message));
+
+    // Telegram
+    telegramReporteEditado({
+      ciudadanoNombre: ciudadano.rows[0].nombre,
+      reporteId:       req.params.id,
+      titulo:          result.rows[0].titulo,
+    }).catch(err => console.error('Telegram edicion:', err.message));
 
     res.json(result.rows[0]);
   } catch (err) { res.status(500).json({ error: err.message }); }
