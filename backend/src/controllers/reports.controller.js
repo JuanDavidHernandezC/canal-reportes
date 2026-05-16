@@ -170,6 +170,7 @@ async function updateReport(req, res) {
       ciudadanoNombre: ciudadano.rows[0].nombre,
       reporteId:       req.params.id,
       titulo:          result.rows[0].titulo,
+      tipo:            result.rows[0].tipo,
     }).catch(err => console.error('Telegram edicion:', err.message));
 
     res.json(result.rows[0]);
