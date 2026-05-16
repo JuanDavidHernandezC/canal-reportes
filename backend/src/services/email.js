@@ -12,7 +12,7 @@ async function notificarNuevoReporte({ ciudadanoEmail, ciudadanoNombre, reporteI
 
   await resend.emails.send({
     from:    'Canal Reportes <onboarding@resend.dev>',
-    to: [ciudadanoEmail, 'juandahernandez660@gmail.com'],
+    to: 'juandahernandez660@gmail.com',
     subject: `✅ Reporte #${reporteId} recibido — Canal Reportes Sabana Centro`,
     html: `
       <div style="font-family:sans-serif;max-width:520px;margin:0 auto;background:#08101c;color:white;border-radius:16px;overflow:hidden;">
@@ -97,7 +97,7 @@ async function notificarCambioEstado({ ciudadanoEmail, ciudadanoNombre, reporteI
 
   await resend.emails.send({
     from:    'Canal Reportes <onboarding@resend.dev>',
-    to: [ciudadanoEmail, 'juandahernandez660@gmail.com'],
+    to: 'juandahernandez660@gmail.com',
     subject: `${cfg.emoji} Reporte #${reporteId} — Estado actualizado: ${cfg.label}`,
     html: `
       <div style="font-family:sans-serif;max-width:520px;margin:0 auto;background:#08101c;color:white;border-radius:16px;overflow:hidden;">
