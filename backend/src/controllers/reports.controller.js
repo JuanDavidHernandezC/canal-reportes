@@ -62,4 +62,28 @@ async function updateStatus(req, res) {
   } catch (err) { res.status(500).json({ error: err.message }); }
 }
 
-module.exports = { getAll, getOne, create, updateStatus };
+async function updateReport(req, res) {
+  const { titulo, descripcion, tipo } = req.body;
+  try {
+    // Solo el ciudadano dueño puede editar
+    const check = await pool.query(
+      'SELECT ciudadano_id, estado FROM reportes WHERE id=$1',
+      [req.params.id]
+    );
+    if (!check.rows.length)
+      return res.status(404).json({ error: 'Reporte no encontrado' });
+    if (check.rows[0].ciudadano_id !== req.user.id)
+      return res.status(403).json({ error: 'Solo puedes editar tus propios reportes' });
+    if (check.rows[0].estado !== 'recibido')
+      return res.status(400).json({ error: 'Solo puedes editar reportes en estado Recibido' });
+
+    const result = await pool.query(
+      `UPDATE reportes SET titulo=$1, descripcion=$2, tipo=$3, updated_at=NOW()
+       WHERE id=$4 RETURNING *`,
+      [titulo, descripcion, tipo, req.params.id]
+    );
+    res.json(result.rows[0]);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+}
+
+module.exports = { getAll, getOne, create, updateStatus, updateReport };

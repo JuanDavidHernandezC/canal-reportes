@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import ChatBox from '../components/ChatBox';
 import socket from '../services/socket';
+import EditReportModal from '../components/EditReportModal';
 
 const estadoColor = {
   recibido:   { bg:'#1D9E75', label:'Recibido' },
@@ -22,8 +23,9 @@ export default function ReporteDetalle() {
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [reporte, setReporte] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [reporte, setReporte]   = useState(null);
+  const [loading, setLoading]   = useState(true);
+  const [showEdit, setShowEdit] = useState(false);
 
   async function loadReporte() {
     try {
@@ -46,7 +48,6 @@ export default function ReporteDetalle() {
 
   useEffect(() => {
     loadReporte();
-    // Escuchar cambios de estado en tiempo real
     socket.emit('join_report', id);
     socket.on('report_updated', ({ estado }) => {
       setReporte(prev => prev ? { ...prev, estado } : prev);
@@ -54,7 +55,11 @@ export default function ReporteDetalle() {
     return () => socket.off('report_updated');
   }, [id]);
 
-  if (loading) return <div style={{ padding:40, textAlign:'center', color:'var(--color-text-tertiary)' }}>Cargando...</div>;
+  if (loading) return (
+    <div style={{ padding:40, textAlign:'center', color:'var(--color-text-tertiary)' }}>
+      Cargando...
+    </div>
+  );
   if (!reporte) return null;
 
   const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:3001/api').replace(/\/api\/?$/, '');
@@ -62,11 +67,24 @@ export default function ReporteDetalle() {
     ? reporte.foto_url
     : `${apiBase}${reporte.foto_url}`;
 
-  const est = estadoColor[reporte.estado] || { bg:'#555', label: reporte.estado };
+  const est            = estadoColor[reporte.estado] || { bg:'#555', label: reporte.estado };
   const canChangeStatus = ['operario','admin'].includes(user?.rol);
+  const canEdit         = user?.rol === 'ciudadano' &&
+                          reporte.ciudadano_id === user?.id &&
+                          reporte.estado === 'recibido';
 
   return (
     <div style={{ padding:24, maxWidth:800, margin:'0 auto' }}>
+
+      {/* Modal edición */}
+      {showEdit && (
+        <EditReportModal
+          reporte={reporte}
+          onClose={() => setShowEdit(false)}
+          onUpdated={() => { setShowEdit(false); loadReporte(); }}
+        />
+      )}
+
       {/* Botón volver */}
       <button onClick={() => navigate('/')} style={{
         background:'none', border:'none', color:'var(--color-text-tertiary)',
@@ -100,15 +118,37 @@ export default function ReporteDetalle() {
               {reporte.descripcion}
             </p>
             <p style={{ margin:0, color:'var(--color-text-tertiary)', fontSize:13 }}>
-              Reportado por <strong>{reporte.ciudadano_nombre}</strong> · {new Date(reporte.created_at).toLocaleDateString('es-CO', { day:'2-digit', month:'long', year:'numeric' })}
+              Reportado por <strong>{reporte.ciudadano_nombre}</strong> ·{' '}
+              {new Date(reporte.created_at).toLocaleDateString('es-CO', {
+                day:'2-digit', month:'long', year:'numeric'
+              })}
             </p>
           </div>
-          <span style={{
-            background: est.bg, color:'white', padding:'8px 20px',
-            borderRadius:20, fontSize:13, fontWeight:600, flexShrink:0
-          }}>
-            {est.label}
-          </span>
+
+          {/* Lado derecho: estado + botón editar */}
+          <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:10 }}>
+            <span style={{
+              background: est.bg, color:'white', padding:'8px 20px',
+              borderRadius:20, fontSize:13, fontWeight:600, flexShrink:0
+            }}>
+              {est.label}
+            </span>
+
+            {/* Botón editar — solo ciudadano dueño y estado recibido */}
+            {canEdit && (
+              <button onClick={() => setShowEdit(true)} style={{
+                background:'transparent',
+                border:'1.5px solid #2E75B6',
+                color:'#2E75B6', padding:'7px 16px',
+                borderRadius:20, cursor:'pointer',
+                fontWeight:600, fontSize:13,
+                display:'flex', alignItems:'center', gap:6,
+                transition:'all .2s'
+              }}>
+                ✏️ Editar
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Foto si existe */}
@@ -140,17 +180,18 @@ export default function ReporteDetalle() {
           </h4>
           <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
             {[
-              { key:'recibido',   label:'Recibido',    bg:'#1D9E75' },
-              { key:'en_proceso', label:'En proceso',  bg:'#BA7517' },
-              { key:'resuelto',   label:'Resuelto',    bg:'#2E75B6' },
+              { key:'recibido',   label:'Recibido',   bg:'#1D9E75' },
+              { key:'en_proceso', label:'En proceso', bg:'#BA7517' },
+              { key:'resuelto',   label:'Resuelto',   bg:'#2E75B6' },
             ].map(s => (
               <button key={s.key} onClick={() => cambiarEstado(s.key)}
                 disabled={reporte.estado === s.key}
                 style={{
                   background: reporte.estado === s.key ? s.bg : 'transparent',
-                  color: reporte.estado === s.key ? 'white' : s.bg,
+                  color:      reporte.estado === s.key ? 'white' : s.bg,
                   border: `1.5px solid ${s.bg}`,
-                  padding:'8px 18px', borderRadius:20, cursor: reporte.estado === s.key ? 'default' : 'pointer',
+                  padding:'8px 18px', borderRadius:20,
+                  cursor: reporte.estado === s.key ? 'default' : 'pointer',
                   fontWeight:600, fontSize:13, transition:'all .2s'
                 }}>
                 {s.label}

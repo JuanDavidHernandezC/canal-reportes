@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { getAll, getOne, create, updateStatus } = require('../controllers/reports.controller');
+const { getAll, getOne, create, updateStatus, updateReport } = require('../controllers/reports.controller');
 const { verifyToken, requireRole } = require('../middleware/auth.middleware');
 const { upload } = require('../config/cloudinary');
 const pool = require('../models/db');
@@ -21,6 +21,7 @@ router.get('/public', async (req, res) => {
 router.get('/',    verifyToken, getAll);
 router.get('/:id', verifyToken, getOne);
 router.post('/',   verifyToken, requireRole('ciudadano'), upload.single('foto'), create);
-router.patch('/:id/estado', verifyToken, requireRole('operario','admin'), updateStatus);
+router.patch('/:id/estado',  verifyToken, requireRole('operario','admin'), updateStatus);
+router.patch('/:id/editar',  verifyToken, requireRole('ciudadano'), updateReport);
 
 module.exports = router;
