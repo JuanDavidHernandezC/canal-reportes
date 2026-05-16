@@ -134,6 +134,20 @@ async function updateReport(req, res) {
        WHERE id=$4 RETURNING *`,
       [titulo, descripcion, tipo, req.params.id]
     );
+
+    // Email de notificación al editar
+    const ciudadano = await pool.query(
+      'SELECT nombre, email FROM usuarios WHERE id=$1',
+      [req.user.id]
+    );
+    notificarNuevoReporte({
+      ciudadanoEmail:  ciudadano.rows[0].email,
+      ciudadanoNombre: ciudadano.rows[0].nombre,
+      reporteId:       req.params.id,
+      titulo:          result.rows[0].titulo,
+      tipo:            result.rows[0].tipo,
+    }).catch(err => console.error('Email edicion:', err.message));
+
     res.json(result.rows[0]);
   } catch (err) { res.status(500).json({ error: err.message }); }
 }
