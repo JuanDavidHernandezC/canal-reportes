@@ -6,10 +6,234 @@ import ChatBox from '../components/ChatBox';
 import socket from '../services/socket';
 import EditReportModal from '../components/EditReportModal';
 
+const styles = `
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ══════════════════════════════════
+     RAÍZ Y ENTORNO ESPACIAL
+  ══════════════════════════════════ */
+  .det-root {
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    background: #050008;
+    padding: 40px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Nebulosas de Fondo */
+  .det-root::before {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 50% 50% at 80% 10%, rgba(140,0,220,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 60% at 20% 90%, rgba(29,220,130,0.08) 0%, transparent 55%);
+    z-index: 1;
+  }
+
+  .det-container {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ══════════════════════════════════
+     BOTÓN VOLVER ESTILIZADO
+  ══════════════════════════════════ */
+  .btn-back {
+    background: none; border: none; 
+    color: rgba(255,255,255,0.4);
+    cursor: pointer; font-size: 13.5px; font-weight: 500;
+    margin-bottom: 24px; padding: 0;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s ease;
+  }
+
+  .btn-back:hover {
+    color: #1DDC82;
+    transform: translateX(-3px);
+  }
+
+  /* ══════════════════════════════════
+     CONSOLA PRINCIPAL (DETALLE)
+  ══════════════════════════════════ */
+  .det-card {
+    background: rgba(15, 8, 25, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border-radius: 24px;
+    padding: 32px;
+    margin-bottom: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  }
+
+  .det-top-row {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    flex-wrap: wrap; gap: 20px;
+  }
+
+  .det-info-block { flex: 1; min-width: 280px; }
+
+  .det-meta-type {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .det-icon-wrapper {
+    font-size: 26px;
+    filter: drop-shadow(0 0 8px rgba(255,255,255,0.15));
+  }
+
+  .det-type-tag {
+    font-size: 10.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.14em;
+  }
+
+  .det-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px; font-weight: 800;
+    color: #ffffff; margin: 0 0 12px;
+    letter-spacing: -0.5px; line-height: 1.2;
+  }
+
+  .det-desc {
+    margin: 0 0 18px; color: rgba(255,255,255,0.65);
+    font-size: 14.5px; line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .det-author-date {
+    margin: 0; color: rgba(255,255,255,0.35);
+    font-size: 13px; font-weight: 400;
+  }
+  
+  .det-author-date strong {
+    color: rgba(255,255,255,0.7);
+    font-weight: 500;
+  }
+
+  /* ══════════════════════════════════
+     CONTROLES DERECHOS (BADGE / EDITAR)
+  ══════════════════════════════════ */
+  .det-side-controls {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
+  }
+
+  .main-status-badge {
+    color: #ffffff; padding: 8px 22px;
+    border-radius: 20px; font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    box-shadow: inset 0 0 10px rgba(255,255,255,0.1);
+    white-space: nowrap;
+  }
+
+  .btn-edit-trigger {
+    background: transparent;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    color: #ffffff; padding: 8px 18px;
+    border-radius: 20px; cursor: pointer;
+    font-weight: 600; font-size: 13px;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.22s ease;
+  }
+
+  .btn-edit-trigger:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: #1DDC82;
+    color: #1DDC82;
+    box-shadow: 0 0 15px rgba(29,220,130,0.15);
+  }
+
+  /* multimedia e hitos */
+  .det-image {
+    width: 100%; border-radius: 16px; margin-top: 24px;
+    max-height: 340px; object-fit: cover;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.4);
+  }
+
+  .det-map-link {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 18px;
+    color: #00b4ff; font-size: 13.5px; font-weight: 500;
+    text-decoration: none; transition: color 0.2s;
+  }
+
+  .det-map-link:hover {
+    color: #00d2ff;
+    text-decoration: underline;
+  }
+
+  /* ══════════════════════════════════
+     PANEL OPERARIO (ACCIONES)
+  ══════════════════════════════════ */
+  .panel-actions {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    padding: 24px; margin-bottom: 20px;
+  }
+
+  .panel-actions-title {
+    margin: 0 0 14px; color: rgba(255,255,255,0.4);
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+  }
+
+  .status-options-grid {
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+
+  .btn-status-toggle {
+    background: transparent;
+    padding: 9px 20px; border-radius: 20px;
+    cursor: pointer; font-weight: 700; font-size: 12.5px;
+    font-family: 'DM Sans', sans-serif;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .btn-status-toggle:disabled {
+    cursor: default;
+    color: #ffffff !important;
+    box-shadow: inset 0 0 12px rgba(255,255,255,0.05);
+  }
+
+  /* ══════════════════════════════════
+     LOADER INTERNO
+  ══════════════════════════════════ */
+  .loader-box {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 40vh; gap: 16px;
+  }
+
+  .loader-spinner {
+    width: 32px; height: 32px;
+    border: 3px solid rgba(29,220,130,0.1);
+    border-top-color: #1DDC82;
+    border-radius: 50%;
+    animation: spin 0.85s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 600px) {
+    .det-side-controls { align-items: flex-start; width: 100%; margin-top: 10px; }
+    .det-card { padding: 20px; }
+    .status-options-grid { flex-direction: column; }
+    .btn-status-toggle { width: 100%; text-align: center; }
+  }
+`;
+
 const estadoColor = {
-  recibido:   { bg:'#1D9E75', label:'Recibido' },
-  en_proceso: { bg:'#BA7517', label:'En proceso' },
-  resuelto:   { bg:'#2E75B6', label:'Resuelto' },
+  recibido:   { bg: '#1DDC82', label: 'Recibido' },
+  en_proceso: { bg: '#f59e0b', label: 'En proceso' },
+  resuelto:   { bg: '#00b4ff', label: 'Resuelto' },
 };
 
 const tipoIcon = {
@@ -56,9 +280,15 @@ export default function ReporteDetalle() {
   }, [id]);
 
   if (loading) return (
-    <div style={{ padding:40, textAlign:'center', color:'var(--color-text-tertiary)' }}>
-      Cargando...
-    </div>
+    <>
+      <style>{styles}</style>
+      <div className="det-root">
+        <div className="loader-box">
+          <div className="loader-spinner" />
+          <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 14 }}>Sincronizando consola...</p>
+        </div>
+      </div>
+    </>
   );
   if (!reporte) return null;
 
@@ -67,142 +297,114 @@ export default function ReporteDetalle() {
     ? reporte.foto_url
     : `${apiBase}${reporte.foto_url}`;
 
-  const est            = estadoColor[reporte.estado] || { bg:'#555', label: reporte.estado };
-  const canChangeStatus = ['operario','admin'].includes(user?.rol);
+  const est            = estadoColor[reporte.estado] || { bg: '#555555', label: reporte.estado };
+  const canChangeStatus = ['operario', 'admin'].includes(user?.rol);
   const canEdit         = user?.rol === 'ciudadano' &&
                           reporte.ciudadano_id === user?.id &&
                           reporte.estado === 'recibido';
 
   return (
-    <div style={{ padding:24, maxWidth:800, margin:'0 auto' }}>
+    <>
+      <style>{styles}</style>
+      <div className="det-root">
+        <div className="det-container">
 
-      {/* Modal edición */}
-      {showEdit && (
-        <EditReportModal
-          reporte={reporte}
-          onClose={() => setShowEdit(false)}
-          onUpdated={() => { setShowEdit(false); loadReporte(); }}
-        />
-      )}
+          {/* Modal edición */}
+          {showEdit && (
+            <EditReportModal
+              reporte={reporte}
+              onClose={() => setShowEdit(false)}
+              onUpdated={() => { setShowEdit(false); loadReporte(); }}
+            />
+          )}
 
-      {/* Botón volver */}
-      <button onClick={() => navigate('/')} style={{
-        background:'none', border:'none', color:'var(--color-text-tertiary)',
-        cursor:'pointer', fontSize:14, marginBottom:20, padding:0,
-        display:'flex', alignItems:'center', gap:6
-      }}>
-        ← Volver a mis reportes
-      </button>
+          {/* Botón volver */}
+          <button onClick={() => navigate('/')} className="btn-back">
+            <span>←</span> Volver a mis reportes
+          </button>
 
-      {/* Cabecera */}
-      <div style={{
-        background:'var(--color-background-secondary)', borderRadius:14,
-        padding:24, marginBottom:16,
-        border:'0.5px solid var(--color-border-tertiary)'
-      }}>
-        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:12 }}>
-          <div>
-            <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
-              <span style={{ fontSize:28 }}>{tipoIcon[reporte.tipo] || '📌'}</span>
-              <span style={{
-                fontSize:11, fontWeight:600, color: est.bg,
-                textTransform:'uppercase', letterSpacing:'.08em'
-              }}>
-                {reporte.tipo}
-              </span>
+          {/* Cabecera / Ficha de Incidencia */}
+          <div className="det-card">
+            <div className="det-top-row">
+              <div className="det-info-block">
+                <div className="det-meta-type">
+                  <span className="det-icon-wrapper">{tipoIcon[reporte.tipo] || '📌'}</span>
+                  <span className="det-type-tag" style={{ color: est.bg, textShadow: `0 0 10px ${est.bg}40` }}>
+                    {reporte.tipo}
+                  </span>
+                </div>
+                <h2 className="det-title">{reporte.titulo}</h2>
+                <p className="det-desc">{reporte.descripcion}</p>
+                <p className="det-author-date">
+                  Reportado por <strong>{reporte.ciudadano_nombre}</strong> ·{' '}
+                  {new Date(reporte.created_at).toLocaleDateString('es-CO', {
+                    day: '2-digit', month: 'long', year: 'numeric'
+                  })}
+                </p>
+              </div>
+
+              {/* Lado derecho: estado + botón editar */}
+              <div className="det-side-controls">
+                <span className="main-status-badge" style={{ background: est.bg, textShadow: '0 1px 2px rgba(0,0,0,0.3)', boxShadow: `0 4px 14px ${est.bg}40` }}>
+                  {est.label}
+                </span>
+
+                {/* Botón editar */}
+                {canEdit && (
+                  <button onClick={() => setShowEdit(true)} className="btn-edit-trigger">
+                    ✏️ Editar reporte
+                  </button>
+                )}
+              </div>
             </div>
-            <h2 style={{ margin:'0 0 8px', color:'var(--color-text-primary)', fontSize:22 }}>
-              {reporte.titulo}
-            </h2>
-            <p style={{ margin:'0 0 4px', color:'var(--color-text-secondary)', fontSize:14 }}>
-              {reporte.descripcion}
-            </p>
-            <p style={{ margin:0, color:'var(--color-text-tertiary)', fontSize:13 }}>
-              Reportado por <strong>{reporte.ciudadano_nombre}</strong> ·{' '}
-              {new Date(reporte.created_at).toLocaleDateString('es-CO', {
-                day:'2-digit', month:'long', year:'numeric'
-              })}
-            </p>
-          </div>
 
-          {/* Lado derecho: estado + botón editar */}
-          <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:10 }}>
-            <span style={{
-              background: est.bg, color:'white', padding:'8px 20px',
-              borderRadius:20, fontSize:13, fontWeight:600, flexShrink:0
-            }}>
-              {est.label}
-            </span>
+            {/* Foto si existe */}
+            {reporte.foto_url && (
+              <img src={imageUrl} alt="Foto Reporte" className="det-image" />
+            )}
 
-            {/* Botón editar — solo ciudadano dueño y estado recibido */}
-            {canEdit && (
-              <button onClick={() => setShowEdit(true)} style={{
-                background:'transparent',
-                border:'1.5px solid #2E75B6',
-                color:'#2E75B6', padding:'7px 16px',
-                borderRadius:20, cursor:'pointer',
-                fontWeight:600, fontSize:13,
-                display:'flex', alignItems:'center', gap:6,
-                transition:'all .2s'
-              }}>
-                ✏️ Editar
-              </button>
+            {/* Ubicación si existe */}
+            {reporte.latitud && reporte.longitud && (
+              <a href={`https://maps.google.com/?q=${reporte.latitud},${reporte.longitud}`}
+                target="_blank" rel="noreferrer" className="det-map-link">
+                📍 Ver localización en Google Maps
+              </a>
             )}
           </div>
+
+          {/* Cambiar estado — solo operario/admin */}
+          {canChangeStatus && (
+            <div className="panel-actions">
+              <h4 className="panel-actions-title">Control de Estado (Uso de Operario)</h4>
+              <div className="status-options-grid">
+                {[
+                  { key: 'recibido',   label: 'Recibido',   bg: '#1DDC82' },
+                  { key: 'en_proceso', label: 'En proceso', bg: '#f59e0b' },
+                  { key: 'resuelto',   label: 'Resuelto',   bg: '#00b4ff' },
+                ].map(s => {
+                  const isActive = reporte.estado === s.key;
+                  return (
+                    <button key={s.key} onClick={() => cambiarEstado(s.key)}
+                      disabled={isActive}
+                      className="btn-status-toggle"
+                      style={{
+                        background: isActive ? s.bg : 'transparent',
+                        border: `1.5px solid ${s.bg}`,
+                        color: s.bg,
+                        boxShadow: isActive ? `0 4px 15px ${s.bg}40` : 'none'
+                      }}>
+                      {s.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Componente de Chat integrado */}
+          <ChatBox reporteId={id} />
         </div>
-
-        {/* Foto si existe */}
-        {reporte.foto_url && (
-          <img src={imageUrl} alt="Foto Reporte"
-            style={{ width:'100%', borderRadius:10, marginTop:16, maxHeight:300, objectFit:'cover' }} />
-        )}
-
-        {/* Ubicación si existe */}
-        {reporte.latitud && reporte.longitud && (
-          <a href={`https://maps.google.com/?q=${reporte.latitud},${reporte.longitud}`}
-            target="_blank" rel="noreferrer" style={{
-              display:'inline-flex', alignItems:'center', gap:6, marginTop:12,
-              color:'#2E75B6', fontSize:13, textDecoration:'none'
-            }}>
-            📍 Ver ubicación en Google Maps
-          </a>
-        )}
       </div>
-
-      {/* Cambiar estado — solo operario/admin */}
-      {canChangeStatus && (
-        <div style={{
-          background:'var(--color-background-secondary)', borderRadius:14,
-          padding:20, marginBottom:16, border:'0.5px solid var(--color-border-tertiary)'
-        }}>
-          <h4 style={{ margin:'0 0 12px', color:'var(--color-text-primary)', fontSize:14 }}>
-            Actualizar estado del reporte
-          </h4>
-          <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
-            {[
-              { key:'recibido',   label:'Recibido',   bg:'#1D9E75' },
-              { key:'en_proceso', label:'En proceso', bg:'#BA7517' },
-              { key:'resuelto',   label:'Resuelto',   bg:'#2E75B6' },
-            ].map(s => (
-              <button key={s.key} onClick={() => cambiarEstado(s.key)}
-                disabled={reporte.estado === s.key}
-                style={{
-                  background: reporte.estado === s.key ? s.bg : 'transparent',
-                  color:      reporte.estado === s.key ? 'white' : s.bg,
-                  border: `1.5px solid ${s.bg}`,
-                  padding:'8px 18px', borderRadius:20,
-                  cursor: reporte.estado === s.key ? 'default' : 'pointer',
-                  fontWeight:600, fontSize:13, transition:'all .2s'
-                }}>
-                {s.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Chat */}
-      <ChatBox reporteId={id} />
-    </div>
+    </>
   );
 }
