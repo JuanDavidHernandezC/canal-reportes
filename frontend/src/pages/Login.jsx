@@ -8,6 +8,9 @@ const styles = `
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* ══════════════════════════════════
+     FONDO AURORA ANIMADO
+  ══════════════════════════════════ */
   .lp-root {
     font-family: 'DM Sans', sans-serif;
     min-height: 100vh;
@@ -17,123 +20,210 @@ const styles = `
     padding: 24px;
     position: relative;
     overflow: hidden;
-    background: #06101a;
+    background: #030c14;
   }
 
-  /* Fondo con gradiente atmosférico */
-  .lp-bg {
-    position: absolute; inset: 0; pointer-events: none;
-    background:
-      radial-gradient(ellipse 60% 50% at 20% 30%, rgba(29,158,117,0.22) 0%, transparent 55%),
-      radial-gradient(ellipse 50% 55% at 80% 70%, rgba(46,117,182,0.18) 0%, transparent 55%),
-      radial-gradient(ellipse 40% 40% at 50% 100%, rgba(29,158,117,0.1) 0%, transparent 50%);
+  /* Orbe 1 — verde, flota lento */
+  .lp-orb1 {
+    position: absolute;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(29,158,117,0.28) 0%, transparent 65%);
+    top: -200px; left: -150px;
+    animation: float1 14s ease-in-out infinite;
+    pointer-events: none;
   }
 
-  /* Grilla de fondo */
-  .lp-grid {
-    position: absolute; inset: 0; pointer-events: none;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-    background-size: 52px 52px;
+  /* Orbe 2 — azul, flota diferente */
+  .lp-orb2 {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(46,117,182,0.22) 0%, transparent 65%);
+    bottom: -180px; right: -120px;
+    animation: float2 18s ease-in-out infinite;
+    pointer-events: none;
   }
 
-  /* ── TARJETA PRINCIPAL ── */
+  /* Orbe 3 — verde más pequeño, movimiento rápido */
+  .lp-orb3 {
+    position: absolute;
+    width: 350px; height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(29,158,117,0.16) 0%, transparent 65%);
+    top: 50%; right: 10%;
+    animation: float3 10s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* Orbe 4 — teal, fondo inferior izq */
+  .lp-orb4 {
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(20,120,100,0.15) 0%, transparent 65%);
+    bottom: 5%; left: 15%;
+    animation: float4 16s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes float1 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    33%      { transform: translate(60px, 80px) scale(1.08); }
+    66%      { transform: translate(-40px, 50px) scale(0.95); }
+  }
+
+  @keyframes float2 {
+    0%,100% { transform: translate(0,0) scale(1); }
+    40%      { transform: translate(-70px,-60px) scale(1.1); }
+    70%      { transform: translate(40px,-30px) scale(0.92); }
+  }
+
+  @keyframes float3 {
+    0%,100% { transform: translate(0,0); }
+    50%      { transform: translate(-30px, 60px); }
+  }
+
+  @keyframes float4 {
+    0%,100% { transform: translate(0,0); }
+    50%      { transform: translate(50px,-40px); }
+  }
+
+  /* Partículas flotantes */
+  .lp-particles {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+
+  .lp-p {
+    position: absolute;
+    width: 2px; height: 2px;
+    border-radius: 50%;
+    background: rgba(29,158,117,0.6);
+    animation: particle-rise linear infinite;
+  }
+
+  @keyframes particle-rise {
+    0%   { opacity: 0; transform: translateY(0) translateX(0); }
+    10%  { opacity: 1; }
+    90%  { opacity: 0.3; }
+    100% { opacity: 0; transform: translateY(-100vh) translateX(20px); }
+  }
+
+  /* ══════════════════════════════════
+     TARJETA
+  ══════════════════════════════════ */
   .lp-card {
     position: relative; z-index: 10;
     display: flex;
-    width: 100%; max-width: 900px;
+    width: 100%; max-width: 880px;
     min-height: 560px;
     border-radius: 28px;
     overflow: hidden;
     box-shadow:
-      0 32px 80px rgba(0,0,0,0.6),
-      0 0 0 1px rgba(255,255,255,0.06);
-    animation: card-in 0.5s cubic-bezier(0.16,1,0.3,1) both;
+      0 40px 100px rgba(0,0,0,0.7),
+      0 0 0 1px rgba(255,255,255,0.07),
+      0 0 60px rgba(29,158,117,0.08);
+    animation: card-in 0.6s cubic-bezier(0.16,1,0.3,1) both;
   }
 
   @keyframes card-in {
-    from { opacity: 0; transform: translateY(24px) scale(0.98); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
+    from { opacity:0; transform:translateY(30px) scale(0.97); }
+    to   { opacity:1; transform:translateY(0) scale(1); }
   }
 
-  /* ── PANEL IZQUIERDO (imagen + overlay) ── */
+  /* ══════════════════════════════════
+     PANEL IZQUIERDO
+  ══════════════════════════════════ */
   .lp-visual {
-    width: 42%;
+    width: 44%;
     flex-shrink: 0;
     position: relative;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 36px 32px;
-    /* Imagen de ciudad colombiana (Zipaquirá / Sabana) */
-    background:
-      linear-gradient(160deg, rgba(7,20,35,0.3) 0%, rgba(7,20,35,0.7) 100%),
-      linear-gradient(135deg, #0d2a1e 0%, #0a1f35 50%, #061018 100%);
+    padding: 38px 36px;
+    background: linear-gradient(160deg, #071a12 0%, #04121e 60%, #030c14 100%);
   }
 
-  /* Patrón de puntos decorativo sobre la imagen */
-  .lp-visual::before {
-    content: '';
+  /* Resplandor interno del panel */
+  .lp-visual-glow {
     position: absolute; inset: 0; pointer-events: none;
-    background-image: radial-gradient(rgba(29,158,117,0.25) 1px, transparent 1px);
-    background-size: 24px 24px;
-    opacity: 0.4;
+    background:
+      radial-gradient(ellipse 90% 60% at 30% 20%, rgba(29,158,117,0.22) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 70% at 80% 85%, rgba(46,117,182,0.14) 0%, transparent 55%);
+    animation: glow-shift 8s ease-in-out infinite alternate;
   }
 
-  /* Gradiente inferior sobre la imagen */
-  .lp-visual::after {
-    content: '';
-    position: absolute; bottom: 0; left: 0; right: 0; height: 65%;
-    background: linear-gradient(to top, rgba(6,16,26,0.95) 0%, transparent 100%);
-    pointer-events: none;
+  @keyframes glow-shift {
+    0%   { opacity: 0.8; transform: scale(1); }
+    100% { opacity: 1;   transform: scale(1.05); }
   }
 
-  /* Blob decorativo */
-  .lp-blob {
+  /* Líneas diagonales decorativas */
+  .lp-lines {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+
+  .lp-line {
     position: absolute;
-    top: -60px; right: -60px;
-    width: 240px; height: 240px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(29,158,117,0.3) 0%, transparent 70%);
-    pointer-events: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(29,158,117,0.25), transparent);
+    animation: line-slide linear infinite;
+  }
+
+  @keyframes line-slide {
+    0%   { transform: translateX(-100%) rotate(-25deg); opacity: 0; }
+    20%  { opacity: 1; }
+    80%  { opacity: 0.5; }
+    100% { transform: translateX(200%) rotate(-25deg); opacity: 0; }
+  }
+
+  /* Separador derecho */
+  .lp-sep {
+    position: absolute; top: 0; right: 0; bottom: 0; width: 1px;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      rgba(29,158,117,0.5) 30%,
+      rgba(29,158,117,0.3) 60%,
+      transparent 100%
+    );
+    z-index: 2;
   }
 
   .lp-visual-top {
-    position: relative; z-index: 2;
-    display: flex; align-items: center; gap: 9px;
+    position: relative; z-index: 3;
+    display: flex; align-items: center; gap: 10px;
   }
 
   .lp-dot {
-    width: 8px; height: 8px; border-radius: 50%;
+    width: 9px; height: 9px; border-radius: 50%;
     background: #1D9E75;
-    box-shadow: 0 0 10px rgba(29,158,117,0.7);
+    box-shadow: 0 0 0 3px rgba(29,158,117,0.2), 0 0 16px rgba(29,158,117,0.6);
     animation: pulse-dot 2.5s ease-in-out infinite;
   }
 
   @keyframes pulse-dot {
-    0%,100% { box-shadow: 0 0 10px rgba(29,158,117,0.7); }
-    50%      { box-shadow: 0 0 5px rgba(29,158,117,0.3); }
+    0%,100% { box-shadow: 0 0 0 3px rgba(29,158,117,0.2), 0 0 16px rgba(29,158,117,0.6); }
+    50%      { box-shadow: 0 0 0 6px rgba(29,158,117,0.08), 0 0 8px rgba(29,158,117,0.3); }
   }
 
   .lp-brand {
     font-family: 'Syne', sans-serif;
     font-size: 14px; font-weight: 700;
     color: rgba(255,255,255,0.8);
-    letter-spacing: 0.02em;
   }
 
-  .lp-visual-bottom { position: relative; z-index: 2; }
+  .lp-visual-bottom { position: relative; z-index: 3; }
 
   .lp-tag {
     display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(29,158,117,0.15);
-    border: 1px solid rgba(29,158,117,0.3);
+    background: rgba(29,158,117,0.12);
+    border: 1px solid rgba(29,158,117,0.28);
     color: #4dd4a0; font-size: 10px; font-weight: 600;
-    padding: 4px 11px; border-radius: 20px;
+    padding: 4px 12px; border-radius: 20px;
     text-transform: uppercase; letter-spacing: 0.12em;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
   }
 
   .lp-tag-blink {
@@ -146,22 +236,27 @@ const styles = `
 
   .lp-visual-title {
     font-family: 'Syne', sans-serif;
-    font-size: 36px; font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -1.5px;
+    font-size: 40px; font-weight: 800;
+    line-height: 1.0; letter-spacing: -2px;
     color: white;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
   }
 
-  .lp-visual-title .hi { color: #1D9E75; }
+  .lp-visual-title .hi {
+    color: transparent;
+    -webkit-text-stroke: 1.5px #1D9E75;
+    text-shadow: 0 0 30px rgba(29,158,117,0.4);
+  }
 
   .lp-visual-desc {
     font-size: 13px; font-weight: 300;
-    color: rgba(255,255,255,0.45);
-    line-height: 1.65;
+    color: rgba(255,255,255,0.38);
+    line-height: 1.7; max-width: 260px;
   }
 
-  /* ── PANEL DERECHO (formulario) ── */
+  /* ══════════════════════════════════
+     PANEL DERECHO
+  ══════════════════════════════════ */
   .lp-form-panel {
     flex: 1;
     background: #ffffff;
@@ -169,9 +264,20 @@ const styles = `
     align-items: center;
     justify-content: center;
     padding: 48px 44px;
+    /* Borde superior izquierdo redondeado que combina con la tarjeta */
+    border-radius: 0 28px 28px 0;
   }
 
-  .lp-form-inner { width: 100%; max-width: 320px; }
+  .lp-form-inner {
+    width: 100%;
+    max-width: 300px;
+    animation: form-in 0.5s 0.15s ease both;
+  }
+
+  @keyframes form-in {
+    from { opacity:0; transform:translateY(12px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
 
   .lp-form-eyebrow {
     font-size: 10.5px; font-weight: 600;
@@ -183,14 +289,13 @@ const styles = `
   .lp-form-title {
     font-family: 'Syne', sans-serif;
     font-size: 28px; font-weight: 800;
-    color: #0d1f2d;
-    letter-spacing: -0.8px; line-height: 1.1;
-    margin-bottom: 6px;
+    color: #0d1f2d; letter-spacing: -0.8px; line-height: 1.1;
+    margin-bottom: 5px;
   }
 
   .lp-form-sub {
     font-size: 13px; color: #94a3b8; font-weight: 300;
-    margin-bottom: 28px;
+    margin-bottom: 26px; line-height: 1.5;
   }
 
   /* Toggle */
@@ -198,7 +303,7 @@ const styles = `
     display: flex;
     background: #f1f5f9;
     border-radius: 12px; padding: 4px; gap: 4px;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
 
   .lp-tab {
@@ -206,43 +311,30 @@ const styles = `
     border: none; border-radius: 9px;
     font-size: 13.5px; font-weight: 600;
     font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: all 0.2s;
+    cursor: pointer; transition: all 0.2s;
   }
 
-  .lp-tab-on {
-    background: #1D9E75;
-    color: white;
-    box-shadow: 0 3px 12px rgba(29,158,117,0.35);
-  }
-
-  .lp-tab-off {
-    background: transparent;
-    color: #94a3b8;
-  }
-
+  .lp-tab-on  { background: #1D9E75; color: white; box-shadow: 0 3px 12px rgba(29,158,117,0.35); }
+  .lp-tab-off { background: transparent; color: #94a3b8; }
   .lp-tab-off:hover { color: #475569; }
 
   /* Campos */
-  .lp-fields { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+  .lp-fields { display: flex; flex-direction: column; gap: 13px; margin-bottom: 18px; }
 
   .lp-field { display: flex; flex-direction: column; gap: 5px; }
 
   .lp-label {
-    font-size: 11px; font-weight: 600;
+    font-size: 10.5px; font-weight: 600;
     color: #64748b;
     text-transform: uppercase; letter-spacing: 0.09em;
   }
 
-  .lp-input-wrap {
-    position: relative;
-    display: flex; align-items: center;
-  }
+  .lp-input-wrap { position: relative; display: flex; align-items: center; }
 
   .lp-icon {
     position: absolute; left: 13px;
     display: flex; align-items: center;
-    pointer-events: none;
+    pointer-events: none; z-index: 1;
   }
 
   .lp-input {
@@ -254,7 +346,6 @@ const styles = `
     color: #0d1f2d;
     font-size: 14px;
     font-family: 'DM Sans', sans-serif;
-    font-weight: 400;
     outline: none;
     transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
   }
@@ -267,63 +358,68 @@ const styles = `
     box-shadow: 0 0 0 3px rgba(29,158,117,0.1);
   }
 
+  .lp-input:-webkit-autofill,
+  .lp-input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #f0fdf8 inset !important;
+    -webkit-text-fill-color: #0d1f2d !important;
+  }
+
   .lp-input option { background: white; color: #0d1f2d; }
 
   /* Error */
   .lp-error {
     display: flex; align-items: flex-start; gap: 8px;
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    color: #dc2626;
-    padding: 11px 13px; border-radius: 10px;
-    font-size: 13px; margin-bottom: 16px;
-    line-height: 1.4;
+    background: #fef2f2; border: 1px solid #fecaca;
+    color: #dc2626; padding: 10px 13px;
+    border-radius: 10px; font-size: 13px;
+    margin-bottom: 14px; line-height: 1.4;
   }
 
   /* Botón */
   .lp-btn {
-    width: 100%;
-    padding: 14px;
-    background: #1D9E75;
-    color: white; border: none;
-    border-radius: 12px;
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, #1D9E75 0%, #168c65 100%);
+    color: white; border: none; border-radius: 12px;
     font-size: 15px; font-weight: 700;
     font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 4px 18px rgba(29,158,117,0.35);
+    cursor: pointer; transition: all 0.22s;
+    box-shadow: 0 4px 18px rgba(29,158,117,0.4);
     display: flex; align-items: center; justify-content: center; gap: 8px;
     letter-spacing: 0.02em;
+    position: relative; overflow: hidden;
+  }
+
+  /* Shimmer en el botón */
+  .lp-btn::after {
+    content: '';
+    position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: skewX(-20deg);
+    animation: btn-shine 3s ease-in-out infinite;
+  }
+
+  @keyframes btn-shine {
+    0%,100% { left: -100%; }
+    50%      { left: 150%; }
   }
 
   .lp-btn:hover:not(:disabled) {
-    background: #179e6e;
-    box-shadow: 0 6px 24px rgba(29,158,117,0.5);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(29,158,117,0.55);
   }
 
   .lp-btn:active:not(:disabled) { transform: translateY(0); }
 
-  .lp-btn:disabled {
-    background: #a7d9c6;
-    cursor: not-allowed;
-    box-shadow: none;
-  }
+  .lp-btn:disabled { background: #a7d9c6; cursor: not-allowed; box-shadow: none; }
+  .lp-btn:disabled::after { display: none; }
 
   /* Divisor */
-  .lp-div {
-    display: flex; align-items: center; gap: 10px;
-    margin: 18px 0;
-  }
-
+  .lp-div { display: flex; align-items: center; gap: 10px; margin: 16px 0; }
   .lp-div-line { flex:1; height:1px; background: #e2e8f0; }
   .lp-div-txt  { font-size: 11px; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.1em; }
 
   /* Footer */
-  .lp-footer {
-    text-align: center;
-    font-size: 13px; color: #94a3b8;
-  }
+  .lp-footer { text-align: center; font-size: 13px; color: #94a3b8; }
 
   .lp-footer-btn {
     color: #1D9E75; font-weight: 600; cursor: pointer;
@@ -331,13 +427,13 @@ const styles = `
     font-size: 13px; font-family: 'DM Sans', sans-serif;
     transition: color 0.2s;
   }
-
   .lp-footer-btn:hover { color: #147a59; }
 
-  /* Responsive */
+  @keyframes spin { to { transform: rotate(360deg); } }
+
   @media (max-width: 700px) {
     .lp-visual { display: none; }
-    .lp-form-panel { padding: 40px 28px; }
+    .lp-form-panel { border-radius: 28px; padding: 40px 28px; }
   }
 `;
 
@@ -377,6 +473,16 @@ function IconTag() {
   );
 }
 
+// Partículas generadas dinámicamente
+const PARTICLES = Array.from({ length: 18 }, (_, i) => ({
+  id: i,
+  left:  `${5 + (i * 5.5) % 92}%`,
+  delay: `${(i * 1.3) % 12}s`,
+  dur:   `${8 + (i * 1.7) % 10}s`,
+  size:  i % 3 === 0 ? 3 : 2,
+  opacity: i % 4 === 0 ? 0.8 : 0.5,
+}));
+
 export default function Login() {
   const [mode, setMode]       = useState('login');
   const [form, setForm]       = useState({ nombre:'', email:'', password:'', rol:'ciudadano' });
@@ -385,11 +491,8 @@ export default function Login() {
   const { login }  = useAuth();
   const navigate   = useNavigate();
 
-  function handleChange(e) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
-
-  function switchMode(m) { setMode(m); setError(''); }
+  function handleChange(e) { setForm({ ...form, [e.target.name]: e.target.value }); }
+  function switchMode(m)   { setMode(m); setError(''); }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -408,14 +511,46 @@ export default function Login() {
     <>
       <style>{styles}</style>
       <div className="lp-root">
-        <div className="lp-bg" />
-        <div className="lp-grid" />
 
+        {/* Orbes animados de fondo */}
+        <div className="lp-orb1" />
+        <div className="lp-orb2" />
+        <div className="lp-orb3" />
+        <div className="lp-orb4" />
+
+        {/* Partículas flotantes */}
+        <div className="lp-particles">
+          {PARTICLES.map(p => (
+            <div key={p.id} className="lp-p" style={{
+              left: p.left,
+              bottom: '-10px',
+              width: p.size, height: p.size,
+              opacity: p.opacity,
+              animationDelay: p.delay,
+              animationDuration: p.dur,
+            }} />
+          ))}
+        </div>
+
+        {/* Tarjeta */}
         <div className="lp-card">
 
-          {/* ── PANEL IZQUIERDO ── */}
+          {/* PANEL IZQUIERDO */}
           <div className="lp-visual">
-            <div className="lp-blob" />
+            <div className="lp-visual-glow" />
+            <div className="lp-sep" />
+
+            {/* Líneas de luz en movimiento */}
+            <div className="lp-lines">
+              {[0,1,2,3].map(i => (
+                <div key={i} className="lp-line" style={{
+                  width: `${200 + i * 60}px`,
+                  top: `${15 + i * 22}%`,
+                  animationDelay: `${i * 3}s`,
+                  animationDuration: `${7 + i * 2}s`,
+                }} />
+              ))}
+            </div>
 
             <div className="lp-visual-top">
               <span className="lp-dot" />
@@ -438,7 +573,7 @@ export default function Login() {
             </div>
           </div>
 
-          {/* ── PANEL DERECHO ── */}
+          {/* PANEL DERECHO */}
           <div className="lp-form-panel">
             <div className="lp-form-inner">
 
@@ -454,20 +589,11 @@ export default function Login() {
                   : 'Crea tu cuenta en segundos'}
               </p>
 
-              {/* Toggle */}
               <div className="lp-toggle">
-                <button
-                  type="button"
-                  className={`lp-tab ${mode === 'login' ? 'lp-tab-on' : 'lp-tab-off'}`}
-                  onClick={() => switchMode('login')}
-                >
+                <button type="button" className={`lp-tab ${mode==='login' ? 'lp-tab-on':'lp-tab-off'}`} onClick={() => switchMode('login')}>
                   Ingresar
                 </button>
-                <button
-                  type="button"
-                  className={`lp-tab ${mode === 'register' ? 'lp-tab-on' : 'lp-tab-off'}`}
-                  onClick={() => switchMode('register')}
-                >
+                <button type="button" className={`lp-tab ${mode==='register' ? 'lp-tab-on':'lp-tab-off'}`} onClick={() => switchMode('register')}>
                   Registrarse
                 </button>
               </div>
@@ -480,15 +606,7 @@ export default function Login() {
                       <label className="lp-label">Nombre completo</label>
                       <div className="lp-input-wrap">
                         <span className="lp-icon"><IconUser /></span>
-                        <input
-                          className="lp-input"
-                          name="nombre"
-                          placeholder="Tu nombre"
-                          value={form.nombre}
-                          onChange={handleChange}
-                          required
-                          autoComplete="name"
-                        />
+                        <input className="lp-input" name="nombre" placeholder="Tu nombre" value={form.nombre} onChange={handleChange} required autoComplete="name" />
                       </div>
                     </div>
                   )}
@@ -497,16 +615,7 @@ export default function Login() {
                     <label className="lp-label">Correo electrónico</label>
                     <div className="lp-input-wrap">
                       <span className="lp-icon"><IconMail /></span>
-                      <input
-                        className="lp-input"
-                        name="email"
-                        type="email"
-                        placeholder="tu@correo.com"
-                        value={form.email}
-                        onChange={handleChange}
-                        required
-                        autoComplete="email"
-                      />
+                      <input className="lp-input" name="email" type="email" placeholder="tu@correo.com" value={form.email} onChange={handleChange} required autoComplete="email" />
                     </div>
                   </div>
 
@@ -514,16 +623,7 @@ export default function Login() {
                     <label className="lp-label">Contraseña</label>
                     <div className="lp-input-wrap">
                       <span className="lp-icon"><IconLock /></span>
-                      <input
-                        className="lp-input"
-                        name="password"
-                        type="password"
-                        placeholder="Mínimo 6 caracteres"
-                        value={form.password}
-                        onChange={handleChange}
-                        required
-                        autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                      />
+                      <input className="lp-input" name="password" type="password" placeholder="Mínimo 6 caracteres" value={form.password} onChange={handleChange} required autoComplete={mode==='login' ? 'current-password':'new-password'} />
                     </div>
                   </div>
 
@@ -532,12 +632,7 @@ export default function Login() {
                       <label className="lp-label">Tipo de cuenta</label>
                       <div className="lp-input-wrap">
                         <span className="lp-icon"><IconTag /></span>
-                        <select
-                          className="lp-input"
-                          name="rol"
-                          value={form.rol}
-                          onChange={handleChange}
-                        >
+                        <select className="lp-input" name="rol" value={form.rol} onChange={handleChange}>
                           <option value="ciudadano">Ciudadano</option>
                           <option value="operario">Operario municipal</option>
                         </select>
@@ -559,26 +654,11 @@ export default function Login() {
 
                 <button type="submit" className="lp-btn" disabled={loading}>
                   {loading ? (
-                    <>
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" style={{animation:'spin 1s linear infinite'}}>
-                        <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-                      </svg>
-                      Cargando...
-                    </>
+                    <><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" style={{animation:'spin 1s linear infinite'}}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Cargando...</>
                   ) : mode === 'login' ? (
-                    <>
-                      Ingresar
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                      </svg>
-                    </>
+                    <>Ingresar <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></>
                   ) : (
-                    <>
-                      Crear cuenta
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12"/>
-                      </svg>
-                    </>
+                    <>Crear cuenta <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg></>
                   )}
                 </button>
               </form>
@@ -590,22 +670,16 @@ export default function Login() {
               </div>
 
               <p className="lp-footer">
-                {mode === 'login' ? '¿No tienes cuenta? ' : '¿Ya tienes cuenta? '}
-                <button
-                  type="button"
-                  className="lp-footer-btn"
-                  onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}
-                >
-                  {mode === 'login' ? 'Regístrate aquí' : 'Inicia sesión'}
+                {mode==='login' ? '¿No tienes cuenta? ' : '¿Ya tienes cuenta? '}
+                <button type="button" className="lp-footer-btn" onClick={() => switchMode(mode==='login' ? 'register':'login')}>
+                  {mode==='login' ? 'Regístrate aquí' : 'Inicia sesión'}
                 </button>
               </p>
 
             </div>
           </div>
-
         </div>
       </div>
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </>
   );
 }
