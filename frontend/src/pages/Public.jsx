@@ -18,12 +18,11 @@ const styles = `
   .pub-hero {
     position: relative;
     overflow: hidden;
-    /* padding-top generoso para que el navbar global fijo no tape el contenido */
     padding: 80px 24px 72px;
     text-align: center;
   }
 
-  /* Botón volver — posicionado dentro del flujo del hero, arriba a la izquierda */
+  /* Botón volver dentro del hero, no interfiere con el navbar global */
   .pub-back-row {
     position: absolute;
     top: 20px; left: 24px;
@@ -31,14 +30,13 @@ const styles = `
   }
 
   .btn-back {
-    display: inline-flex; align-items: center; gap: 8px;
+    display: inline-flex; align-items: center; gap: 9px;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
-    color: rgba(255,255,255,0.6);
-    padding: 7px 14px 7px 10px;
+    color: rgba(255,255,255,0.65);
+    padding: 8px 16px 8px 12px;
     border-radius: 10px;
-    text-decoration: none;
-    font-weight: 500; font-size: 13px;
+    font-weight: 500; font-size: 13.5px;
     font-family: 'DM Sans', sans-serif;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -54,9 +52,9 @@ const styles = `
 
   .btn-back-arrow {
     display: flex; align-items: center; justify-content: center;
-    width: 20px; height: 20px; border-radius: 6px;
-    background: rgba(255,255,255,0.07);
-    font-size: 12px;
+    width: 22px; height: 22px; border-radius: 6px;
+    background: rgba(255,255,255,0.06);
+    font-size: 13px;
     transition: background 0.2s;
   }
 
@@ -223,7 +221,8 @@ const styles = `
   .pub-filter-btn.active {
     background: rgba(255,255,255,0.08);
     border-color: rgba(255,255,255,0.2);
-    color: white; font-weight: 600;
+    color: white;
+    font-weight: 600;
   }
 
   .pub-filter-btn.active-recibido   { background: rgba(29,158,117,0.15); border-color: rgba(29,158,117,0.35); color: #1D9E75; }
@@ -297,7 +296,7 @@ const styles = `
   .estado-resuelto   { background: rgba(46,117,182,0.15); color: #2E75B6; }
   .estado-default    { background: rgba(136,136,136,0.15); color: #888; }
 
-  /* ── EMPTY / LOADING ── */
+  /* ── EMPTY ── */
   .pub-empty {
     text-align: center; padding: 80px 20px;
     color: rgba(255,255,255,0.2);
@@ -315,9 +314,9 @@ const styles = `
 `;
 
 const estadoConfig = {
-  recibido:   { label: 'Recibido',   cls: 'estado-recibido' },
-  en_proceso: { label: 'En proceso', cls: 'estado-en_proceso' },
-  resuelto:   { label: 'Resuelto',   cls: 'estado-resuelto' },
+  recibido:   { label: 'Recibido',    cls: 'estado-recibido',   tipoColor: '#1D9E75' },
+  en_proceso: { label: 'En proceso',  cls: 'estado-en_proceso', tipoColor: '#eab308' },
+  resuelto:   { label: 'Resuelto',    cls: 'estado-resuelto',   tipoColor: '#2E75B6' },
 };
 
 const tipoIcon  = { infraestructura: '🏗️', basuras: '🗑️', alumbrado: '💡', otro: '📌' };
@@ -361,14 +360,14 @@ export default function Public() {
       <style>{styles}</style>
       <div className="pub-root">
 
-        {/* Hero con botón volver integrado */}
+        {/* Hero — botón volver dentro, sin topbar fijo propio */}
         <div className="pub-hero">
           <div className="pub-hero-bg" />
           <div className="pub-hero-grid" />
 
-          {/* Botón volver — dentro del hero, no interfiere con el navbar global */}
+          {/* CAMBIO: button con navigate(-1) en lugar de <Link to="/dashboard"> */}
           <div className="pub-back-row">
-            <button className="btn-back" onClick={() => navigate('/dashboard')}>
+            <button className="btn-back" onClick={() => navigate(-1)}>
               <span className="btn-back-arrow">←</span>
               Volver al Dashboard
             </button>
@@ -437,7 +436,7 @@ export default function Public() {
           ) : (
             <div className="pub-list">
               {filtrados.map((r, i) => {
-                const est = estadoConfig[r.estado] || { label: r.estado, cls: 'estado-default' };
+                const est = estadoConfig[r.estado] || { label: r.estado, cls: 'estado-default', tipoColor: '#888' };
                 const tc  = tipoColor[r.tipo] || '#888';
                 return (
                   <div key={r.id} className="pub-card" style={{ animationDelay: `${i * 0.04}s` }}>
@@ -447,9 +446,7 @@ export default function Public() {
                         <p className="pub-card-tipo" style={{ color: tc }}>{r.tipo}</p>
                         <h3 className="pub-card-title">{r.titulo}</h3>
                         <p className="pub-card-meta">
-                          {new Date(r.created_at).toLocaleDateString('es-CO', {
-                            day: '2-digit', month: 'short', year: 'numeric',
-                          })}
+                          {new Date(r.created_at).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' })}
                           {r.latitud && <span className="pub-card-geo">· 📍 Con ubicación</span>}
                         </p>
                       </div>
@@ -461,7 +458,6 @@ export default function Public() {
             </div>
           )}
         </div>
-
       </div>
     </>
   );
