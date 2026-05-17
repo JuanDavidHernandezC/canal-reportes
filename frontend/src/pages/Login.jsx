@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
@@ -9,7 +9,7 @@ const styles = `
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   /* ══════════════════════════════════
-     FONDO AURORA ANIMADO
+     FONDO GALÁCTICO ANIMADO
   ══════════════════════════════════ */
   .lp-root {
     font-family: 'DM Sans', sans-serif;
@@ -20,93 +20,129 @@ const styles = `
     padding: 24px;
     position: relative;
     overflow: hidden;
-    background: #030c14;
+    background: #050008;
   }
 
-  /* Orbe 1 — verde, flota lento */
+  /* Capa base: nebulosa oscura */
+  .lp-nebula-base {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 50%, rgba(80,0,120,0.55) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 75% 30%, rgba(0,60,120,0.4) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 50% at 50% 80%, rgba(120,0,80,0.3) 0%, transparent 50%);
+    animation: nebula-breathe 12s ease-in-out infinite alternate;
+  }
+
+  @keyframes nebula-breathe {
+    0%   { opacity: 0.8; transform: scale(1); }
+    100% { opacity: 1;   transform: scale(1.04); }
+  }
+
+  /* Orbe galáctico principal — rosa/violeta */
   .lp-orb1 {
     position: absolute;
-    width: 700px; height: 700px;
+    width: 750px; height: 750px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(29,158,117,0.28) 0%, transparent 65%);
-    top: -200px; left: -150px;
-    animation: float1 14s ease-in-out infinite;
+    background: radial-gradient(circle, rgba(200,50,180,0.22) 0%, rgba(120,0,180,0.15) 35%, transparent 65%);
+    top: -200px; left: -100px;
+    animation: float1 16s ease-in-out infinite;
     pointer-events: none;
   }
 
-  /* Orbe 2 — azul, flota diferente */
+  /* Orbe verde esmeralda */
   .lp-orb2 {
     position: absolute;
     width: 600px; height: 600px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(46,117,182,0.22) 0%, transparent 65%);
-    bottom: -180px; right: -120px;
-    animation: float2 18s ease-in-out infinite;
+    background: radial-gradient(circle, rgba(29,220,130,0.18) 0%, rgba(0,150,80,0.1) 40%, transparent 65%);
+    bottom: -150px; right: -100px;
+    animation: float2 20s ease-in-out infinite;
     pointer-events: none;
   }
 
-  /* Orbe 3 — verde más pequeño, movimiento rápido */
+  /* Orbe azul cyan */
   .lp-orb3 {
-    position: absolute;
-    width: 350px; height: 350px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(29,158,117,0.16) 0%, transparent 65%);
-    top: 50%; right: 10%;
-    animation: float3 10s ease-in-out infinite;
-    pointer-events: none;
-  }
-
-  /* Orbe 4 — teal, fondo inferior izq */
-  .lp-orb4 {
     position: absolute;
     width: 400px; height: 400px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(20,120,100,0.15) 0%, transparent 65%);
-    bottom: 5%; left: 15%;
-    animation: float4 16s ease-in-out infinite;
+    background: radial-gradient(circle, rgba(0,180,255,0.14) 0%, transparent 65%);
+    top: 40%; right: 5%;
+    animation: float3 11s ease-in-out infinite;
     pointer-events: none;
+  }
+
+  /* Corazón galáctico — resplandor central */
+  .lp-heart-glow {
+    position: absolute;
+    left: 22%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 380px; height: 380px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      rgba(29,220,130,0.2) 0%,
+      rgba(0,180,80,0.12) 30%,
+      rgba(0,120,60,0.06) 55%,
+      transparent 70%
+    );
+    pointer-events: none;
+    animation: heart-pulse 6s ease-in-out infinite;
+  }
+
+  @keyframes heart-pulse {
+    0%,100% { transform: translate(-22%,-50%) scale(1);   opacity: 0.7; }
+    50%      { transform: translate(-22%,-50%) scale(1.12); opacity: 1;   }
   }
 
   @keyframes float1 {
     0%,100% { transform: translate(0,0) scale(1); }
-    33%      { transform: translate(60px, 80px) scale(1.08); }
-    66%      { transform: translate(-40px, 50px) scale(0.95); }
+    33%      { transform: translate(50px, 70px) scale(1.07); }
+    66%      { transform: translate(-30px, 40px) scale(0.96); }
   }
 
   @keyframes float2 {
     0%,100% { transform: translate(0,0) scale(1); }
-    40%      { transform: translate(-70px,-60px) scale(1.1); }
-    70%      { transform: translate(40px,-30px) scale(0.92); }
+    40%      { transform: translate(-60px,-50px) scale(1.1); }
+    70%      { transform: translate(30px,-25px) scale(0.93); }
   }
 
   @keyframes float3 {
     0%,100% { transform: translate(0,0); }
-    50%      { transform: translate(-30px, 60px); }
+    50%      { transform: translate(-25px, 55px); }
   }
 
-  @keyframes float4 {
-    0%,100% { transform: translate(0,0); }
-    50%      { transform: translate(50px,-40px); }
+  /* Campo de estrellas */
+  .lp-stars {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
   }
 
-  /* Partículas flotantes */
+  .lp-star {
+    position: absolute;
+    border-radius: 50%;
+    background: white;
+    animation: star-twinkle ease-in-out infinite;
+  }
+
+  @keyframes star-twinkle {
+    0%,100% { opacity: 0.1; transform: scale(1); }
+    50%      { opacity: 1;   transform: scale(1.4); }
+  }
+
+  /* Partículas de polvo cósmico */
   .lp-particles {
     position: absolute; inset: 0; pointer-events: none; overflow: hidden;
   }
 
   .lp-p {
     position: absolute;
-    width: 2px; height: 2px;
     border-radius: 50%;
-    background: rgba(29,158,117,0.6);
     animation: particle-rise linear infinite;
   }
 
   @keyframes particle-rise {
     0%   { opacity: 0; transform: translateY(0) translateX(0); }
     10%  { opacity: 1; }
-    90%  { opacity: 0.3; }
-    100% { opacity: 0; transform: translateY(-100vh) translateX(20px); }
+    90%  { opacity: 0.2; }
+    100% { opacity: 0; transform: translateY(-100vh) translateX(15px); }
   }
 
   /* ══════════════════════════════════
@@ -115,24 +151,25 @@ const styles = `
   .lp-card {
     position: relative; z-index: 10;
     display: flex;
-    width: 100%; max-width: 880px;
-    min-height: 560px;
-    border-radius: 28px;
+    width: 100%; max-width: 900px;
+    min-height: 570px;
+    border-radius: 30px;
     overflow: hidden;
     box-shadow:
-      0 40px 100px rgba(0,0,0,0.7),
-      0 0 0 1px rgba(255,255,255,0.07),
-      0 0 60px rgba(29,158,117,0.08);
-    animation: card-in 0.6s cubic-bezier(0.16,1,0.3,1) both;
+      0 50px 120px rgba(0,0,0,0.8),
+      0 0 0 1px rgba(200,100,255,0.12),
+      0 0 80px rgba(160,0,220,0.12),
+      0 0 40px rgba(29,220,130,0.06);
+    animation: card-in 0.7s cubic-bezier(0.16,1,0.3,1) both;
   }
 
   @keyframes card-in {
-    from { opacity:0; transform:translateY(30px) scale(0.97); }
+    from { opacity:0; transform:translateY(35px) scale(0.96); }
     to   { opacity:1; transform:translateY(0) scale(1); }
   }
 
   /* ══════════════════════════════════
-     PANEL IZQUIERDO
+     PANEL IZQUIERDO — GALÁCTICO
   ══════════════════════════════════ */
   .lp-visual {
     width: 44%;
@@ -143,49 +180,121 @@ const styles = `
     flex-direction: column;
     justify-content: space-between;
     padding: 38px 36px;
-    background: linear-gradient(160deg, #071a12 0%, #04121e 60%, #030c14 100%);
+    background: linear-gradient(155deg,
+      rgba(40,0,70,0.95) 0%,
+      rgba(15,0,40,0.98) 50%,
+      rgba(5,0,20,1) 100%
+    );
   }
 
-  /* Resplandor interno del panel */
-  .lp-visual-glow {
+  /* Fondo de nebulosa interno */
+  .lp-visual-nebula {
     position: absolute; inset: 0; pointer-events: none;
     background:
-      radial-gradient(ellipse 90% 60% at 30% 20%, rgba(29,158,117,0.22) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 70% at 80% 85%, rgba(46,117,182,0.14) 0%, transparent 55%);
-    animation: glow-shift 8s ease-in-out infinite alternate;
+      radial-gradient(ellipse 100% 70% at 30% 25%, rgba(180,40,200,0.3) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 60% at 70% 75%, rgba(0,160,80,0.2) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 50% at 80% 20%, rgba(0,120,220,0.15) 0%, transparent 45%);
+    animation: nebula-shift 10s ease-in-out infinite alternate;
   }
 
-  @keyframes glow-shift {
-    0%   { opacity: 0.8; transform: scale(1); }
-    100% { opacity: 1;   transform: scale(1.05); }
+  @keyframes nebula-shift {
+    0%   { opacity: 0.85; }
+    100% { opacity: 1; }
   }
 
-  /* Líneas diagonales decorativas */
-  .lp-lines {
-    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  /* Corazón galáctico en el panel */
+  .lp-galaxy-heart {
+    position: relative; z-index: 3;
+    width: 100%; height: 160px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 10px 0 4px;
   }
 
-  .lp-line {
+  .lp-heart-container {
+    position: relative;
+    width: 120px; height: 120px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Anillos orbitales */
+  .lp-heart-ring {
     position: absolute;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(29,158,117,0.25), transparent);
-    animation: line-slide linear infinite;
+    border-radius: 50%;
+    border: 1px solid;
+    animation: ring-spin linear infinite;
   }
 
-  @keyframes line-slide {
-    0%   { transform: translateX(-100%) rotate(-25deg); opacity: 0; }
-    20%  { opacity: 1; }
-    80%  { opacity: 0.5; }
-    100% { transform: translateX(200%) rotate(-25deg); opacity: 0; }
+  .lp-heart-ring.r1 {
+    width: 140px; height: 140px;
+    border-color: rgba(200,80,255,0.3);
+    border-style: dashed;
+    animation-duration: 25s;
   }
 
-  /* Separador derecho */
+  .lp-heart-ring.r2 {
+    width: 175px; height: 175px;
+    border-color: rgba(29,220,130,0.2);
+    animation-duration: 40s;
+    animation-direction: reverse;
+  }
+
+  .lp-heart-ring.r3 {
+    width: 210px; height: 210px;
+    border-color: rgba(100,100,255,0.12);
+    border-style: dotted;
+    animation-duration: 60s;
+  }
+
+  @keyframes ring-spin {
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Ícono central pulsante */
+  .lp-heart-core {
+    position: relative; z-index: 4;
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #1DDC82 0%, rgba(0,150,80,0.6) 70%, transparent 100%);
+    box-shadow:
+      0 0 30px rgba(29,220,130,0.8),
+      inset 0 0 12px rgba(255,255,255,0.4);
+    animation: heart-core-pulse 4s ease-in-out infinite;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  @keyframes heart-core-pulse {
+    0%,100% { transform: scale(1); box-shadow: 0 0 30px rgba(29,220,130,0.8); }
+    50%      { transform: scale(1.1); box-shadow: 0 0 55px rgba(29,220,130,1), 0 0 90px rgba(0,255,150,0.4); }
+  }
+
+  /* Partículas de destellos alrededor del ícono */
+  .lp-heart-sparks {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(29,220,130,0.9) 1.5px, transparent 2px),
+      radial-gradient(circle at 80% 20%, rgba(200,255,220,0.8) 1px, transparent 1.5px),
+      radial-gradient(circle at 72% 78%, rgba(100,255,180,0.8) 1.5px, transparent 2px),
+      radial-gradient(circle at 14% 72%, rgba(29,220,130,0.7) 1px, transparent 1.5px),
+      radial-gradient(circle at 88% 58%, rgba(150,255,200,0.8) 1.5px, transparent 2px);
+    animation: sparks-twinkle 4s ease-in-out infinite;
+    width: 220px; height: 220px;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    border-radius: 50%;
+  }
+
+  @keyframes sparks-twinkle {
+    0%,100% { opacity: 0.5; transform: translate(-50%,-50%) rotate(0deg); }
+    50%      { opacity: 1;   transform: translate(-50%,-50%) rotate(180deg); }
+  }
+
+  /* Separador derecho verde */
   .lp-sep {
     position: absolute; top: 0; right: 0; bottom: 0; width: 1px;
     background: linear-gradient(180deg,
       transparent 0%,
-      rgba(29,158,117,0.5) 30%,
-      rgba(29,158,117,0.3) 60%,
+      rgba(29,220,130,0.6) 30%,
+      rgba(160,0,220,0.4) 60%,
       transparent 100%
     );
     z-index: 2;
@@ -198,94 +307,38 @@ const styles = `
 
   .lp-dot {
     width: 9px; height: 9px; border-radius: 50%;
-    background: #1D9E75;
-    box-shadow: 0 0 0 3px rgba(29,158,117,0.2), 0 0 16px rgba(29,158,117,0.6);
+    background: #1DDC82;
+    box-shadow: 0 0 0 3px rgba(29,220,130,0.2), 0 0 16px rgba(29,220,130,0.7);
     animation: pulse-dot 2.5s ease-in-out infinite;
   }
 
   @keyframes pulse-dot {
-    0%,100% { box-shadow: 0 0 0 3px rgba(29,158,117,0.2), 0 0 16px rgba(29,158,117,0.6); }
-    50%      { box-shadow: 0 0 0 6px rgba(29,158,117,0.08), 0 0 8px rgba(29,158,117,0.3); }
+    0%,100% { box-shadow: 0 0 0 3px rgba(29,220,130,0.2), 0 0 16px rgba(29,220,130,0.7); }
+    50%      { box-shadow: 0 0 0 6px rgba(29,220,130,0.06), 0 0 8px rgba(29,220,130,0.3); }
   }
 
   .lp-brand {
     font-family: 'Syne', sans-serif;
-    font-size: 14px; font-weight: 700;
-    color: rgba(255,255,255,0.8);
-  }
-
-  /* NAVE ESPACIAL / ORBE TECNOLÓGICO CSS GENERATIVO */
-  .lp-tech-graphic {
-    position: relative;
-    width: 100%;
-    height: 140px;
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    z-index: 3;
-  }
-
-  .lp-tech-core {
-    position: relative;
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(29,158,117,0.6) 0%, rgba(3,12,20,0.8) 80%);
-    box-shadow: 0 0 35px rgba(29,158,117,0.5), inset 0 0 15px rgba(255,255,255,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: core-pulse 4s ease-in-out infinite;
-  }
-
-  .lp-tech-ring {
-    position: absolute;
-    border: 1.5px dashed rgba(29,158,117,0.4);
-    border-radius: 50%;
-    animation: tech-spin 25s linear infinite;
-  }
-
-  .lp-tech-ring.r1 { width: 130px; height: 130px; animation-duration: 20s; border-style: dotted; }
-  .lp-tech-ring.r2 { width: 170px; height: 170px; animation-direction: reverse; animation-duration: 35s; border-color: rgba(46,117,182,0.3); }
-  .lp-tech-ring.r3 { width: 210px; height: 210px; border: 1px solid rgba(29,158,117,0.15); }
-
-  .lp-tech-nodes {
-    position: absolute;
-    width: 100%; height: 100%;
-    background: 
-      radial-gradient(circle at 15% 50%, #1D9E75 3px, transparent 4px),
-      radial-gradient(circle at 85% 30%, #2e75b6 2px, transparent 3px),
-      radial-gradient(circle at 50% 12%, #4dd4a0 3px, transparent 4px);
-    opacity: 0.7;
-    animation: tech-spin 40s linear infinite;
-  }
-
-  @keyframes core-pulse {
-    0%, 100% { transform: scale(1); box-shadow: 0 0 35px rgba(29,158,117,0.5); }
-    50% { transform: scale(1.06); box-shadow: 0 0 50px rgba(47,214,162,0.7); }
-  }
-
-  @keyframes tech-spin {
-    100% { transform: rotate(360deg); }
+    font-size: 13px; font-weight: 700;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 0.04em;
   }
 
   .lp-visual-bottom { position: relative; z-index: 3; }
 
   .lp-tag {
     display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(29,158,117,0.12);
-    border: 1px solid rgba(29,158,117,0.28);
-    color: #4dd4a0; font-size: 10px; font-weight: 600;
+    background: rgba(29,220,130,0.1);
+    border: 1px solid rgba(29,220,130,0.3);
+    color: #4DFFA0; font-size: 10px; font-weight: 600;
     padding: 4px 12px; border-radius: 20px;
     text-transform: uppercase; letter-spacing: 0.12em;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
 
   .lp-tag-blink {
     width: 4px; height: 4px; border-radius: 50%;
-    background: #1D9E75;
+    background: #1DDC82;
     animation: blink 2s ease-in-out infinite;
   }
 
@@ -293,86 +346,106 @@ const styles = `
 
   .lp-visual-title {
     font-family: 'Syne', sans-serif;
-    font-size: 40px; font-weight: 800;
+    font-size: 42px; font-weight: 800;
     line-height: 1.0; letter-spacing: -2px;
     color: white;
     margin-bottom: 16px;
+    text-shadow: 0 0 40px rgba(255,255,255,0.1);
   }
 
   .lp-visual-title .hi {
     color: transparent;
-    -webkit-text-stroke: 1.5px #1D9E75;
-    text-shadow: 0 0 30px rgba(29,158,117,0.4);
+    -webkit-text-stroke: 1.5px #1DDC82;
+    text-shadow:
+      0 0 20px rgba(29,220,130,0.6),
+      0 0 50px rgba(29,220,130,0.3);
   }
 
   .lp-visual-desc {
-    font-size: 13px; font-weight: 300;
-    color: rgba(255,255,255,0.38);
-    line-height: 1.7; max-width: 260px;
+    font-size: 12.5px; font-weight: 300;
+    color: rgba(255,255,255,0.35);
+    line-height: 1.75; max-width: 255px;
   }
 
   /* ══════════════════════════════════
-     PANEL DERECHO
+     PANEL DERECHO — FORMULARIO
   ══════════════════════════════════ */
   .lp-form-panel {
     flex: 1;
-    background: #ffffff;
+    background: rgba(8,4,18,0.97);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 48px 44px;
-    border-radius: 0 28px 28px 0;
+    padding: 50px 46px;
+    border-radius: 0 30px 30px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Fondo sutil del panel derecho */
+  .lp-form-panel::before {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 70% 50% at 80% 10%, rgba(100,0,180,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 60% at 10% 90%, rgba(0,160,80,0.08) 0%, transparent 50%);
   }
 
   .lp-form-inner {
+    position: relative; z-index: 2;
     width: 100%;
     max-width: 300px;
-    animation: form-in 0.5s 0.15s ease both;
+    animation: form-in 0.5s 0.2s ease both;
   }
 
   @keyframes form-in {
-    from { opacity:0; transform:translateY(12px); }
+    from { opacity:0; transform:translateY(14px); }
     to   { opacity:1; transform:translateY(0); }
   }
 
   .lp-form-eyebrow {
     font-size: 10.5px; font-weight: 600;
-    color: #1D9E75;
-    text-transform: uppercase; letter-spacing: 0.14em;
+    color: #1DDC82;
+    text-transform: uppercase; letter-spacing: 0.16em;
     margin-bottom: 6px;
   }
 
   .lp-form-title {
     font-family: 'Syne', sans-serif;
-    font-size: 28px; font-weight: 800;
-    color: #0d1f2d; letter-spacing: -0.8px; line-height: 1.1;
+    font-size: 30px; font-weight: 800;
+    color: #ffffff; letter-spacing: -0.8px; line-height: 1.1;
     margin-bottom: 5px;
   }
 
   .lp-form-sub {
-    font-size: 13px; color: #94a3b8; font-weight: 300;
-    margin-bottom: 26px; line-height: 1.5;
+    font-size: 12.5px; color: rgba(255,255,255,0.35); font-weight: 300;
+    margin-bottom: 26px; line-height: 1.6;
   }
 
   /* Toggle */
   .lp-toggle {
     display: flex;
-    background: #f1f5f9;
-    border-radius: 12px; padding: 4px; gap: 4px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 13px; padding: 4px; gap: 4px;
     margin-bottom: 24px;
   }
 
   .lp-tab {
     flex: 1; padding: 9px;
-    border: none; border-radius: 9px;
+    border: none; border-radius: 10px;
     font-size: 13.5px; font-weight: 600;
     font-family: 'DM Sans', sans-serif;
     cursor: pointer; transition: all 0.2s;
   }
 
-  .lp-tab-on  { background: #1D9E75; color: white; box-shadow: 0 3px 12px rgba(29,158,117,0.35); }
-  .lp-tab-off { background: transparent; color: #94a3b8; }
-  .lp-tab-off:hover { color: #475569; }
+  .lp-tab-on  {
+    background: linear-gradient(135deg, #1DDC82, #14b86c);
+    color: #040010;
+    box-shadow: 0 3px 14px rgba(29,220,130,0.4);
+  }
+  .lp-tab-off { background: transparent; color: rgba(255,255,255,0.35); }
+  .lp-tab-off:hover { color: rgba(255,255,255,0.65); }
 
   /* Campos */
   .lp-fields { display: flex; flex-direction: column; gap: 13px; margin-bottom: 18px; }
@@ -380,9 +453,9 @@ const styles = `
   .lp-field { display: flex; flex-direction: column; gap: 5px; }
 
   .lp-label {
-    font-size: 10.5px; font-weight: 600;
-    color: #64748b;
-    text-transform: uppercase; letter-spacing: 0.09em;
+    font-size: 10px; font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase; letter-spacing: 0.1em;
   }
 
   .lp-input-wrap { position: relative; display: flex; align-items: center; }
@@ -396,60 +469,59 @@ const styles = `
   .lp-input {
     width: 100%;
     padding: 12px 14px 12px 42px;
-    background: #f8fafc;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 11px;
-    color: #0d1f2d;
-    font-size: 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 13.5px;
     font-family: 'DM Sans', sans-serif;
     outline: none;
     transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
   }
 
-  .lp-input::placeholder { color: #c0ccda; font-weight: 300; }
+  .lp-input::placeholder { color: rgba(255,255,255,0.2); font-weight: 300; }
 
   .lp-input:focus {
-    border-color: #1D9E75;
-    background: #f0fdf8;
-    box-shadow: 0 0 0 3px rgba(29,158,117,0.1);
+    border-color: #1DDC82;
+    background: rgba(29,220,130,0.06);
+    box-shadow: 0 0 0 3px rgba(29,220,130,0.12);
   }
 
   .lp-input:-webkit-autofill,
   .lp-input:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0 1000px #f0fdf8 inset !important;
-    -webkit-text-fill-color: #0d1f2d !important;
+    -webkit-box-shadow: 0 0 0 1000px rgba(10,5,25,1) inset !important;
+    -webkit-text-fill-color: #ffffff !important;
   }
 
-  .lp-input option { background: white; color: #0d1f2d; }
+  .lp-input option { background: #0d0820; color: #ffffff; }
 
   /* Error */
   .lp-error {
     display: flex; align-items: flex-start; gap: 8px;
-    background: #fef2f2; border: 1px solid #fecaca;
-    color: #dc2626; padding: 10px 13px;
-    border-radius: 10px; font-size: 13px;
+    background: rgba(220,38,38,0.1); border: 1px solid rgba(220,38,38,0.3);
+    color: #ff7070; padding: 10px 13px;
+    border-radius: 11px; font-size: 12.5px;
     margin-bottom: 14px; line-height: 1.4;
   }
 
   /* Botón */
   .lp-btn {
     width: 100%; padding: 14px;
-    background: linear-gradient(135deg, #1D9E75 0%, #168c65 100%);
-    color: white; border: none; border-radius: 12px;
+    background: linear-gradient(135deg, #1DDC82 0%, #14b86c 100%);
+    color: #040010; border: none; border-radius: 13px;
     font-size: 15px; font-weight: 700;
     font-family: 'DM Sans', sans-serif;
     cursor: pointer; transition: all 0.22s;
-    box-shadow: 0 4px 18px rgba(29,158,117,0.4);
+    box-shadow: 0 4px 22px rgba(29,220,130,0.45);
     display: flex; align-items: center; justify-content: center; gap: 8px;
     letter-spacing: 0.02em;
     position: relative; overflow: hidden;
   }
 
-  /* Shimmer en el botón */
   .lp-btn::after {
     content: '';
     position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
     transform: skewX(-20deg);
     animation: btn-shine 3s ease-in-out infinite;
   }
@@ -461,41 +533,41 @@ const styles = `
 
   .lp-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(29,158,117,0.55);
+    box-shadow: 0 8px 30px rgba(29,220,130,0.6);
   }
 
   .lp-btn:active:not(:disabled) { transform: translateY(0); }
 
-  .lp-btn:disabled { background: #a7d9c6; cursor: not-allowed; box-shadow: none; }
+  .lp-btn:disabled { background: rgba(29,220,130,0.25); color: rgba(255,255,255,0.3); cursor: not-allowed; box-shadow: none; }
   .lp-btn:disabled::after { display: none; }
 
   /* Divisor */
   .lp-div { display: flex; align-items: center; gap: 10px; margin: 16px 0; }
-  .lp-div-line { flex:1; height:1px; background: #e2e8f0; }
-  .lp-div-txt  { font-size: 11px; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.1em; }
+  .lp-div-line { flex:1; height:1px; background: rgba(255,255,255,0.08); }
+  .lp-div-txt  { font-size: 11px; color: rgba(255,255,255,0.2); text-transform: uppercase; letter-spacing: 0.1em; }
 
   /* Footer */
-  .lp-footer { text-align: center; font-size: 13px; color: #94a3b8; }
+  .lp-footer { text-align: center; font-size: 13px; color: rgba(255,255,255,0.3); }
 
   .lp-footer-btn {
-    color: #1D9E75; font-weight: 600; cursor: pointer;
+    color: #1DDC82; font-weight: 600; cursor: pointer;
     background: none; border: none;
     font-size: 13px; font-family: 'DM Sans', sans-serif;
     transition: color 0.2s;
   }
-  .lp-footer-btn:hover { color: #147a59; }
+  .lp-footer-btn:hover { color: #4DFFA0; }
 
   @keyframes spin { to { transform: rotate(360deg); } }
 
   @media (max-width: 700px) {
     .lp-visual { display: none; }
-    .lp-form-panel { border-radius: 28px; padding: 40px 28px; }
+    .lp-form-panel { border-radius: 30px; padding: 40px 28px; }
   }
 `;
 
 function IconMail() {
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="4" width="20" height="16" rx="2"/>
       <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
     </svg>
@@ -504,7 +576,7 @@ function IconMail() {
 
 function IconLock() {
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="3" y="11" width="18" height="11" rx="2"/>
       <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
     </svg>
@@ -513,7 +585,7 @@ function IconLock() {
 
 function IconUser() {
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="8" r="4"/>
       <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
     </svg>
@@ -522,24 +594,32 @@ function IconUser() {
 
 function IconTag() {
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
       <line x1="7" y1="7" x2="7.01" y2="7"/>
     </svg>
   );
 }
 
-const PARTICLES = Array.from({ length: 18 }, (_, i) => ({
+// Estrellas generadas dinámicamente
+const STARS = Array.from({ length: 80 }, (_, i) => ({
   id: i,
-  left:  `${5 + (i * 5.5) % 92}%`,
-  delay: `${(i * 1.3) % 12}s`,
-  dur:   `${8 + (i * 1.7) % 10}s`,
-  size:  i % 3 === 0 ? 3 : 2,
-  opacity: i % 4 === 0 ? 0.8 : 0.5,
+  left:  `${(i * 1.27) % 100}%`,
+  top:   `${(i * 2.13) % 100}%`,
+  size:  i % 5 === 0 ? 2.5 : i % 3 === 0 ? 1.5 : 1,
+  delay: `${(i * 0.7) % 5}s`,
+  dur:   `${2 + (i * 0.4) % 4}s`,
 }));
 
-// Configuración estática para evitar recreación de arrays en cada render
-const DECORATIVE_LINES = [0, 1, 2, 3];
+// Partículas de polvo cósmico
+const PARTICLES = Array.from({ length: 20 }, (_, i) => ({
+  id: i,
+  left:  `${5 + (i * 4.8) % 92}%`,
+  delay: `${(i * 1.1) % 14}s`,
+  dur:   `${10 + (i * 1.4) % 12}s`,
+  size:  i % 4 === 0 ? 3 : 2,
+  color: i % 3 === 0 ? 'rgba(200,80,255,0.6)' : i % 3 === 1 ? 'rgba(29,220,130,0.6)' : 'rgba(100,180,255,0.5)',
+}));
 
 export default function Login() {
   const [mode, setMode]       = useState('login');
@@ -549,70 +629,59 @@ export default function Login() {
   const { login }  = useAuth();
   const navigate   = useNavigate();
 
-  function handleChange(e) { 
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value })); 
-  }
-
-  function switchMode(m) { 
-    setMode(m); 
-    setError('');
-    // Reseteamos el formulario al cambiar de modo para mantener la consistencia de los datos
-    setForm({ nombre: '', email: '', password: '', rol: 'ciudadano' });
-  }
+  function handleChange(e) { setForm({ ...form, [e.target.name]: e.target.value }); }
+  function switchMode(m)   { setMode(m); setError(''); }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (loading) return;
-
-    setError(''); 
-    setLoading(true);
-
+    setError(''); setLoading(true);
     try {
       const endpoint = mode === 'login' ? '/auth/login' : '/auth/register';
-      
-      const payload = mode === 'login' 
-        ? { email: form.email.trim(), password: form.password }
-        : { nombre: form.nombre.trim(), email: form.email.trim(), password: form.password, rol: form.rol };
-
-      const { data } = await api.post(endpoint, payload);
-      
+      const { data } = await api.post(endpoint, form);
       login(data.token, data.user);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.error || 'Error de conexión con el servidor');
-    } finally { 
-      setLoading(false); 
-    }
+      setError(err.response?.data?.error || 'Error de conexión');
+    } finally { setLoading(false); }
   }
-
-  // Memorizamos la estructura de las partículas decorativas para rendimiento óptimo
-  const renderedParticles = useMemo(() => (
-    PARTICLES.map(p => (
-      <div key={p.id} className="lp-p" style={{
-        left: p.left,
-        bottom: '-10px',
-        width: p.size, height: p.size,
-        opacity: p.opacity,
-        animationDelay: p.delay,
-        animationDuration: p.dur,
-      }} />
-    ))
-  ), []);
 
   return (
     <>
       <style>{styles}</style>
       <div className="lp-root">
 
-        {/* Orbes animados de fondo */}
+        {/* Capa nebulosa base */}
+        <div className="lp-nebula-base" />
+
+        {/* Orbes de color */}
         <div className="lp-orb1" />
         <div className="lp-orb2" />
         <div className="lp-orb3" />
-        <div className="lp-orb4" />
+        <div className="lp-heart-glow" />
 
-        {/* Partículas flotantes memorizadas */}
+        {/* Campo de estrellas */}
+        <div className="lp-stars">
+          {STARS.map(s => (
+            <div key={s.id} className="lp-star" style={{
+              left: s.left, top: s.top,
+              width: s.size, height: s.size,
+              animationDelay: s.delay,
+              animationDuration: s.dur,
+            }} />
+          ))}
+        </div>
+
+        {/* Partículas de polvo cósmico */}
         <div className="lp-particles">
-          {renderedParticles}
+          {PARTICLES.map(p => (
+            <div key={p.id} className="lp-p" style={{
+              left: p.left, bottom: '-10px',
+              width: p.size, height: p.size,
+              background: p.color,
+              animationDelay: p.delay,
+              animationDuration: p.dur,
+            }} />
+          ))}
         </div>
 
         {/* Tarjeta */}
@@ -620,20 +689,8 @@ export default function Login() {
 
           {/* PANEL IZQUIERDO */}
           <div className="lp-visual">
-            <div className="lp-visual-glow" />
+            <div className="lp-visual-nebula" />
             <div className="lp-sep" />
-
-            {/* Líneas de luz en movimiento utilizando constante estática */}
-            <div className="lp-lines">
-              {DECORATIVE_LINES.map(i => (
-                <div key={i} className="lp-line" style={{
-                  width: `${200 + i * 60}px`,
-                  top: `${15 + i * 22}%`,
-                  animationDelay: `${i * 3}s`,
-                  animationDuration: `${7 + i * 2}s`,
-                }} />
-              ))}
-            </div>
 
             <div className="lp-visual-top">
               <span className="lp-dot" />
@@ -641,16 +698,18 @@ export default function Login() {
             </div>
 
             {/* GRÁFICO TECNOLÓGICO CENTRAL (ORBE DINÁMICO) */}
-            <div className="lp-tech-graphic">
-              <div className="lp-tech-ring r3" />
-              <div className="lp-tech-ring r2" />
-              <div className="lp-tech-ring r1" />
-              <div className="lp-tech-core">
-                <div className="lp-tech-nodes" />
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4dd4a0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  <path d="m9 11 2 2 4-4"/>
-                </svg>
+            <div className="lp-galaxy-heart">
+              <div className="lp-heart-container">
+                <div className="lp-heart-ring r3" />
+                <div className="lp-heart-ring r2" />
+                <div className="lp-heart-ring r1" />
+                <div className="lp-heart-sparks" />
+                <div className="lp-heart-core">
+                  {/* Icono: check de validación abstracto */}
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </div>
               </div>
             </div>
 
@@ -695,7 +754,7 @@ export default function Login() {
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} noValidate>
+              <form onSubmit={handleSubmit}>
                 <div className="lp-fields">
 
                   {mode === 'register' && (
