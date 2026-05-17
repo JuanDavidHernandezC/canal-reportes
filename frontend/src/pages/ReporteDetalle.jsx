@@ -299,9 +299,11 @@ export default function ReporteDetalle() {
 
   const est            = estadoColor[reporte.estado] || { bg: '#555555', label: reporte.estado };
   const canChangeStatus = ['operario', 'admin'].includes(user?.rol);
-  const canEdit         = user?.rol === 'ciudadano' &&
-                          reporte.ciudadano_id === user?.id &&
-                          reporte.estado === 'recibido';
+  
+  // CAMBIO CLAVE AQUÍ: Permitir que administradores u operarios editen, o el ciudadano dueño si está en 'recibido'
+  const isOwner = user?.rol === 'ciudadano' && reporte.ciudadano_id === user?.id;
+  const isAdminOrStaff = ['admin', 'operario'].includes(user?.rol);
+  const canEdit         = (isAdminOrStaff || isOwner) && reporte.estado === 'recibido';
 
   return (
     <>
@@ -349,7 +351,7 @@ export default function ReporteDetalle() {
                   {est.label}
                 </span>
 
-                {/* Botón editar — solo ciudadano dueño y estado recibido */}
+                {/* Botón editar */}
                 {canEdit && (
                   <button onClick={() => setShowEdit(true)} className="btn-edit-trigger">
                     ✏️ Editar
