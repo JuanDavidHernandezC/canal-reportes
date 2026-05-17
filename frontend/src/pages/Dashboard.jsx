@@ -10,7 +10,7 @@ const styles = `
   .dash-root {
     font-family: 'DM Sans', sans-serif;
     min-height: 100vh;
-    background: var(--color-background-primary);
+    background: #f7f8fa;
     padding: 36px 24px;
   }
 
@@ -24,7 +24,7 @@ const styles = `
   .dash-greeting {
     font-family: 'DM Sans', sans-serif;
     font-size: 13px; font-weight: 400;
-    color: rgba(255,255,255,0.35);
+    color: #9ca3af;
     text-transform: uppercase; letter-spacing: 0.1em;
     margin: 0 0 6px;
   }
@@ -32,7 +32,7 @@ const styles = `
   .dash-title {
     font-family: 'Syne', sans-serif;
     font-size: 30px; font-weight: 800;
-    color: white; margin: 0;
+    color: #111827; margin: 0;
     letter-spacing: -0.5px;
   }
 
@@ -45,14 +45,14 @@ const styles = `
     padding: 12px 22px; border-radius: 12px;
     font-weight: 600; font-size: 14px;
     cursor: pointer; font-family: 'DM Sans', sans-serif;
-    box-shadow: 0 4px 20px rgba(29,158,117,0.35);
+    box-shadow: 0 4px 20px rgba(29,158,117,0.30);
     transition: all 0.2s ease;
     white-space: nowrap;
   }
 
   .btn-new:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 28px rgba(29,158,117,0.5);
+    box-shadow: 0 6px 28px rgba(29,158,117,0.45);
     background: #22b585;
   }
 
@@ -60,7 +60,7 @@ const styles = `
 
   .btn-new-icon {
     width: 20px; height: 20px; border-radius: 6px;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.25);
     display: flex; align-items: center; justify-content: center;
     font-size: 14px; font-weight: 700; line-height: 1;
   }
@@ -71,14 +71,15 @@ const styles = `
   }
 
   .stat-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
     border-radius: 14px; padding: 18px 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
   }
 
   .stat-label {
     font-size: 11px; font-weight: 500;
-    color: rgba(255,255,255,0.35);
+    color: #9ca3af;
     text-transform: uppercase; letter-spacing: 0.08em;
     margin: 0 0 6px;
   }
@@ -86,19 +87,20 @@ const styles = `
   .stat-value {
     font-family: 'Syne', sans-serif;
     font-size: 28px; font-weight: 700;
-    color: white; margin: 0;
+    color: #111827; margin: 0;
   }
 
   .report-list { display: flex; flex-direction: column; gap: 8px; }
 
   .report-card {
     display: flex; justify-content: space-between; align-items: center;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
     border-radius: 14px; padding: 18px 22px;
     text-decoration: none; cursor: pointer;
     transition: all 0.2s ease;
     animation: slide-in 0.3s ease both;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   }
 
   @keyframes slide-in {
@@ -107,9 +109,10 @@ const styles = `
   }
 
   .report-card:hover {
-    background: rgba(255,255,255,0.05);
-    border-color: rgba(255,255,255,0.12);
+    background: #fafafa;
+    border-color: #d1d5db;
     transform: translateX(3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   }
 
   .report-tipo {
@@ -121,11 +124,11 @@ const styles = `
   .report-titulo {
     font-family: 'Syne', sans-serif;
     font-size: 16px; font-weight: 600;
-    color: white; margin: 0 0 5px;
+    color: #111827; margin: 0 0 5px;
   }
 
   .report-fecha {
-    font-size: 12px; color: rgba(255,255,255,0.3);
+    font-size: 12px; color: #9ca3af;
     margin: 0;
   }
 
@@ -137,7 +140,7 @@ const styles = `
 
   .empty-state {
     text-align: center; padding: 80px 20px;
-    color: rgba(255,255,255,0.25);
+    color: #9ca3af;
   }
 
   .empty-icon { font-size: 52px; margin-bottom: 14px; opacity: 0.6; }
@@ -146,23 +149,28 @@ const styles = `
   .section-label {
     font-size: 11px; font-weight: 600;
     text-transform: uppercase; letter-spacing: 0.1em;
-    color: rgba(255,255,255,0.25);
+    color: #9ca3af;
     margin: 0 0 14px;
     padding-left: 2px;
+  }
+
+  .loading-text {
+    color: #9ca3af;
+    font-size: 14px;
   }
 `;
 
 const estadoConfig = {
-  recibido:   { bg: 'rgba(29,158,117,0.15)', color: '#1D9E75', label: 'Recibido' },
-  en_proceso: { bg: 'rgba(234,179,8,0.12)',  color: '#eab308', label: 'En proceso' },
-  resuelto:   { bg: 'rgba(46,117,182,0.15)', color: '#2E75B6', label: 'Resuelto' },
+  recibido:   { bg: 'rgba(29,158,117,0.10)', color: '#1D9E75', label: 'Recibido' },
+  en_proceso: { bg: 'rgba(234,179,8,0.12)',  color: '#b45309', label: 'En proceso' },
+  resuelto:   { bg: 'rgba(46,117,182,0.12)', color: '#2E75B6', label: 'Resuelto' },
 };
 
 const tipoColor = {
   infraestructura: '#2E75B6',
   basuras:         '#1D9E75',
-  alumbrado:       '#eab308',
-  otro:            '#a78bfa',
+  alumbrado:       '#d97706',
+  otro:            '#7c3aed',
 };
 
 export default function Dashboard() {
@@ -214,7 +222,7 @@ export default function Dashboard() {
               </div>
               <div className="stat-card">
                 <p className="stat-label">En proceso</p>
-                <p className="stat-value" style={{ color: '#eab308' }}>{counts.proceso}</p>
+                <p className="stat-value" style={{ color: '#b45309' }}>{counts.proceso}</p>
               </div>
               <div className="stat-card">
                 <p className="stat-label">Resueltos</p>
@@ -233,7 +241,7 @@ export default function Dashboard() {
 
           {/* List */}
           {loading ? (
-            <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 14 }}>Cargando reportes...</p>
+            <p className="loading-text">Cargando reportes...</p>
           ) : reportes.length === 0 ? (
             <div className="empty-state">
               <div className="empty-icon">📭</div>
@@ -244,8 +252,8 @@ export default function Dashboard() {
               <p className="section-label">Historial — {counts.total} reporte{counts.total !== 1 ? 's' : ''}</p>
               <div className="report-list">
                 {reportes.map((r, i) => {
-                  const est = estadoConfig[r.estado] || { bg: 'rgba(136,136,136,0.15)', color: '#888', label: r.estado };
-                  const tc  = tipoColor[r.tipo] || '#888';
+                  const est = estadoConfig[r.estado] || { bg: 'rgba(156,163,175,0.15)', color: '#6b7280', label: r.estado };
+                  const tc  = tipoColor[r.tipo] || '#6b7280';
                   return (
                     <Link to={`/reporte/${r.id}`} key={r.id} className="report-card" style={{ animationDelay: `${i * 0.05}s` }}>
                       <div>
