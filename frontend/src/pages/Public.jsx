@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 
 const styles = `
@@ -14,11 +14,56 @@ const styles = `
     color: white;
   }
 
+  /* ── TOP BAR (botón volver) ── */
+  .pub-topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center;
+    padding: 14px 24px;
+    background: rgba(8,16,28,0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .btn-back {
+    display: inline-flex; align-items: center; gap: 9px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.65);
+    padding: 8px 16px 8px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 500; font-size: 13.5px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-back:hover {
+    background: rgba(29,158,117,0.12);
+    border-color: rgba(29,158,117,0.35);
+    color: #1D9E75;
+    transform: translateX(-2px);
+  }
+
+  .btn-back-arrow {
+    display: flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 6px;
+    background: rgba(255,255,255,0.06);
+    font-size: 13px;
+    transition: background 0.2s;
+  }
+
+  .btn-back:hover .btn-back-arrow {
+    background: rgba(29,158,117,0.2);
+  }
+
   /* ── HERO ── */
   .pub-hero {
     position: relative;
     overflow: hidden;
-    padding: 80px 24px 72px;
+    padding: 120px 24px 72px; /* extra top por el topbar fixed */
     text-align: center;
   }
 
@@ -293,6 +338,7 @@ export default function Public() {
   const [reportes, setReportes] = useState([]);
   const [loading, setLoading]   = useState(true);
   const [filtro, setFiltro]     = useState('todos');
+  const navigate = useNavigate();
 
   useEffect(() => {
     api.get('/reports/public')
@@ -318,6 +364,14 @@ export default function Public() {
     <>
       <style>{styles}</style>
       <div className="pub-root">
+
+        {/* Top bar con botón volver */}
+        <div className="pub-topbar">
+          <Link to="/dashboard" className="btn-back">
+            <span className="btn-back-arrow">←</span>
+            Volver al Dashboard
+          </Link>
+        </div>
 
         {/* Hero */}
         <div className="pub-hero">
