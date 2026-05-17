@@ -4,355 +4,432 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  .login-root {
+  .lr {
     font-family: 'DM Sans', sans-serif;
     min-height: 100vh;
-    background: #060d16;
     display: flex;
-    position: relative;
+    background: #07111d;
     overflow: hidden;
   }
 
-  /* ── PANEL IZQUIERDO (decorativo) ── */
-  .login-left {
+  /* ════════════════════════════════
+     PANEL IZQUIERDO
+  ════════════════════════════════ */
+  .lr-left {
     flex: 1;
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 48px;
-    position: relative;
+    padding: 44px 52px;
     overflow: hidden;
   }
 
-  .login-left-bg {
-    position: absolute; inset: 0; pointer-events: none;
+  /* Fondo con gradiente atmosférico */
+  .lr-left::before {
+    content: '';
+    position: absolute; inset: 0;
     background:
-      radial-gradient(ellipse 80% 60% at 20% 50%, rgba(29,158,117,0.13) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 80% at 80% 20%, rgba(46,117,182,0.1) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 40% at 60% 80%, rgba(29,158,117,0.07) 0%, transparent 50%);
+      radial-gradient(ellipse 70% 55% at 15% 55%, rgba(29,158,117,0.18) 0%, transparent 65%),
+      radial-gradient(ellipse 55% 60% at 85% 15%, rgba(46,117,182,0.14) 0%, transparent 60%),
+      radial-gradient(ellipse 45% 35% at 60% 90%, rgba(29,158,117,0.08) 0%, transparent 55%);
+    pointer-events: none;
   }
 
-  /* Grilla sutil */
-  .login-left-grid {
-    position: absolute; inset: 0; pointer-events: none;
+  /* Grilla */
+  .lr-left::after {
+    content: '';
+    position: absolute; inset: 0;
     background-image:
-      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-    background-size: 60px 60px;
+      linear-gradient(rgba(255,255,255,0.028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.028) 1px, transparent 1px);
+    background-size: 56px 56px;
+    pointer-events: none;
   }
 
-  /* Línea vertical brillante */
-  .login-left-line {
+  /* Separador derecho luminoso */
+  .lr-sep {
     position: absolute; top: 0; right: 0; bottom: 0; width: 1px;
     background: linear-gradient(180deg,
       transparent 0%,
-      rgba(29,158,117,0.4) 30%,
-      rgba(46,117,182,0.4) 60%,
+      rgba(29,158,117,0.5) 35%,
+      rgba(46,117,182,0.5) 65%,
       transparent 100%
     );
+    z-index: 2;
   }
 
-  .login-brand {
-    position: relative; z-index: 1;
-    display: flex; align-items: center; gap: 12px;
+  /* Marca */
+  .lr-logo {
+    position: relative; z-index: 3;
+    display: flex; align-items: center; gap: 10px;
   }
 
-  .login-brand-dot {
-    width: 10px; height: 10px; border-radius: 50%;
+  .lr-logo-dot {
+    width: 9px; height: 9px; border-radius: 50%;
     background: #1D9E75;
-    box-shadow: 0 0 12px #1D9E75, 0 0 24px rgba(29,158,117,0.4);
-    animation: pulse 2.5s ease-in-out infinite;
+    box-shadow: 0 0 0 3px rgba(29,158,117,0.2), 0 0 16px rgba(29,158,117,0.5);
+    animation: glow 2.8s ease-in-out infinite;
   }
 
-  @keyframes pulse {
-    0%, 100% { box-shadow: 0 0 12px #1D9E75, 0 0 24px rgba(29,158,117,0.4); }
-    50%       { box-shadow: 0 0 6px #1D9E75, 0 0 12px rgba(29,158,117,0.2); }
+  @keyframes glow {
+    0%,100% { box-shadow: 0 0 0 3px rgba(29,158,117,0.2), 0 0 16px rgba(29,158,117,0.5); }
+    50%      { box-shadow: 0 0 0 5px rgba(29,158,117,0.1), 0 0 8px rgba(29,158,117,0.3); }
   }
 
-  .login-brand-name {
+  .lr-logo-text {
     font-family: 'Syne', sans-serif;
-    font-size: 16px; font-weight: 700;
-    color: white; letter-spacing: 0.02em;
+    font-size: 15px; font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.03em;
   }
 
-  .login-hero {
-    position: relative; z-index: 1;
+  /* Bloque central hero */
+  .lr-hero { position: relative; z-index: 3; }
+
+  .lr-badge {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(29,158,117,0.09);
+    border: 1px solid rgba(29,158,117,0.22);
+    color: #1D9E75; font-size: 10.5px; font-weight: 600;
+    padding: 5px 13px; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin-bottom: 30px;
   }
 
-  .login-hero-tag {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(29,158,117,0.08);
-    border: 1px solid rgba(29,158,117,0.2);
-    color: #1D9E75; font-size: 11px; font-weight: 600;
-    padding: 5px 12px; border-radius: 20px;
-    text-transform: uppercase; letter-spacing: 0.1em;
-    margin-bottom: 28px;
-  }
-
-  .login-hero-tag-dot {
+  .lr-badge-blink {
     width: 5px; height: 5px; border-radius: 50%;
     background: #1D9E75;
     animation: blink 2s ease-in-out infinite;
   }
 
-  @keyframes blink {
-    0%, 100% { opacity: 1; } 50% { opacity: 0.2; }
-  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
 
-  .login-hero-title {
+  .lr-headline {
     font-family: 'Syne', sans-serif;
-    font-size: clamp(32px, 4vw, 52px);
-    font-weight: 800; line-height: 1.05;
-    letter-spacing: -2px;
+    font-size: clamp(38px, 4.5vw, 58px);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -2.5px;
     color: white;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
   }
 
-  .login-hero-title em {
-    font-style: normal;
+  .lr-headline .outline {
     color: transparent;
-    -webkit-text-stroke: 1px rgba(29,158,117,0.7);
+    -webkit-text-stroke: 1.5px rgba(29,158,117,0.65);
   }
 
-  .login-hero-desc {
-    font-size: 15px; font-weight: 300;
-    color: rgba(255,255,255,0.35);
-    line-height: 1.7; max-width: 360px;
+  .lr-headline .accent { color: #1D9E75; }
+
+  .lr-desc {
+    font-size: 14.5px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.32);
+    line-height: 1.75;
+    max-width: 340px;
   }
 
-  /* Tarjetas de stats decorativas */
-  .login-stats {
-    position: relative; z-index: 1;
-    display: flex; gap: 12px;
+  /* Stats */
+  .lr-stats {
+    position: relative; z-index: 3;
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
   }
 
-  .login-stat-chip {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 12px; padding: 14px 18px;
-    flex: 1;
+  .lr-stat {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.065);
+    border-radius: 14px; padding: 16px 14px;
+    transition: border-color 0.2s;
   }
 
-  .login-stat-num {
+  .lr-stat:hover { border-color: rgba(29,158,117,0.25); }
+
+  .lr-stat-n {
     font-family: 'Syne', sans-serif;
-    font-size: 22px; font-weight: 700;
-    color: white; line-height: 1;
-    margin-bottom: 4px;
+    font-size: 24px; font-weight: 800;
+    line-height: 1; margin-bottom: 5px;
   }
 
-  .login-stat-label {
-    font-size: 10px; font-weight: 500;
-    color: rgba(255,255,255,0.25);
-    text-transform: uppercase; letter-spacing: 0.08em;
+  .lr-stat-l {
+    font-size: 9.5px; font-weight: 600;
+    color: rgba(255,255,255,0.22);
+    text-transform: uppercase; letter-spacing: 0.1em;
   }
 
-  /* ── PANEL DERECHO (formulario) ── */
-  .login-right {
-    width: 480px;
+  /* ════════════════════════════════
+     PANEL DERECHO
+  ════════════════════════════════ */
+  .lr-right {
+    width: 460px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 48px 40px;
-    background: #0a1420;
-    border-left: 1px solid rgba(255,255,255,0.05);
+    background: #0b1825;
+    padding: 48px 44px;
     position: relative;
   }
 
-  .login-right-inner {
+  /* Brillo sutil arriba */
+  .lr-right::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(29,158,117,0.3), rgba(46,117,182,0.3), transparent);
+  }
+
+  .lr-form-wrap {
     width: 100%;
-    max-width: 360px;
-    animation: form-in 0.5s ease both;
+    animation: fadeUp 0.45s ease both;
   }
 
-  @keyframes form-in {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(18px); }
+    to   { opacity:1; transform:translateY(0); }
   }
 
-  .login-form-header { margin-bottom: 32px; }
+  /* Encabezado del form */
+  .lr-form-top { margin-bottom: 28px; }
 
-  .login-form-title {
+  .lr-form-eyebrow {
+    font-size: 10.5px; font-weight: 600;
+    color: #1D9E75;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    margin-bottom: 8px;
+  }
+
+  .lr-form-title {
     font-family: 'Syne', sans-serif;
-    font-size: 26px; font-weight: 800;
-    color: white; letter-spacing: -0.5px;
+    font-size: 28px; font-weight: 800;
+    color: white; letter-spacing: -0.8px;
+    line-height: 1.1;
     margin-bottom: 6px;
   }
 
-  .login-form-sub {
-    font-size: 13.5px; color: rgba(255,255,255,0.3);
-    font-weight: 300;
+  .lr-form-sub {
+    font-size: 13px; font-weight: 300;
+    color: rgba(255,255,255,0.28);
   }
 
   /* Toggle */
-  .login-toggle {
+  .lr-toggle {
     display: flex;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 12px; padding: 4px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; padding: 4px; gap: 4px;
     margin-bottom: 28px;
-    gap: 4px;
   }
 
-  .login-toggle-btn {
-    flex: 1; padding: 9px 0;
-    border: none; border-radius: 8px;
+  .lr-tab {
+    flex: 1; padding: 10px;
+    border: none; border-radius: 9px;
     font-size: 13.5px; font-weight: 600;
     font-family: 'DM Sans', sans-serif;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s;
   }
 
-  .login-toggle-btn.active {
+  .lr-tab-on {
     background: #1D9E75;
     color: white;
-    box-shadow: 0 4px 16px rgba(29,158,117,0.35);
+    box-shadow: 0 3px 14px rgba(29,158,117,0.4);
   }
 
-  .login-toggle-btn.inactive {
+  .lr-tab-off {
     background: transparent;
-    color: rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.28);
   }
-
-  .login-toggle-btn.inactive:hover {
-    color: rgba(255,255,255,0.6);
-  }
+  .lr-tab-off:hover { color: rgba(255,255,255,0.55); }
 
   /* Campos */
-  .login-fields {
-    display: flex; flex-direction: column; gap: 12px;
-    margin-bottom: 20px;
+  .lr-fields { display: flex; flex-direction: column; gap: 14px; margin-bottom: 22px; }
+
+  .lr-field { display: flex; flex-direction: column; gap: 6px; }
+
+  .lr-label {
+    font-size: 10.5px; font-weight: 600;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    padding-left: 1px;
   }
 
-  .login-field {
+  /* Wrapper que contiene icono + input */
+  .lr-input-wrap {
     position: relative;
+    display: flex;
+    align-items: center;
   }
 
-  .login-field-icon {
-    position: absolute; left: 14px; top: 50%;
-    transform: translateY(-50%);
-    font-size: 15px; pointer-events: none;
-    opacity: 0.5;
+  .lr-icon {
+    position: absolute;
+    left: 14px;
+    display: flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px;
+    font-size: 14px;
+    pointer-events: none;
+    z-index: 1;
+    /* SVG icons */
   }
 
-  .login-field-label {
-    display: block;
-    font-size: 11px; font-weight: 600;
-    color: rgba(255,255,255,0.3);
-    text-transform: uppercase; letter-spacing: 0.08em;
-    margin-bottom: 6px;
-    padding-left: 2px;
-  }
-
-  .login-input {
+  .lr-input {
     width: 100%;
-    padding: 12px 14px 12px 42px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 10px;
+    padding: 13px 14px 13px 44px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 11px;
     color: white;
     font-size: 14px;
     font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
     outline: none;
-    transition: border-color 0.2s, background 0.2s;
-    box-sizing: border-box;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
   }
 
-  .login-input::placeholder { color: rgba(255,255,255,0.2); }
-
-  .login-input:focus {
-    border-color: rgba(29,158,117,0.5);
-    background: rgba(29,158,117,0.05);
+  .lr-input::placeholder {
+    color: rgba(255,255,255,0.18);
+    font-weight: 300;
   }
 
-  .login-input option {
-    background: #0a1420;
+  .lr-input:focus {
+    border-color: rgba(29,158,117,0.55);
+    background: rgba(29,158,117,0.06);
+    box-shadow: 0 0 0 3px rgba(29,158,117,0.08);
+  }
+
+  .lr-input option {
+    background: #0b1825;
     color: white;
   }
 
-  /* Error */
-  .login-error {
-    display: flex; align-items: center; gap: 8px;
-    background: rgba(239,68,68,0.08);
-    border: 1px solid rgba(239,68,68,0.2);
-    color: #fca5a5;
-    padding: 10px 14px; border-radius: 10px;
-    font-size: 13px; margin-bottom: 16px;
+  /* Autocompletar — forzar tema oscuro */
+  .lr-input:-webkit-autofill,
+  .lr-input:-webkit-autofill:hover,
+  .lr-input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #111f2e inset !important;
+    -webkit-text-fill-color: white !important;
+    border-color: rgba(29,158,117,0.4) !important;
+    transition: background-color 9999s ease-in-out 0s;
   }
 
-  /* Botón submit */
-  .login-btn {
+  /* Error */
+  .lr-error {
+    display: flex; align-items: center; gap: 9px;
+    background: rgba(239,68,68,0.07);
+    border: 1px solid rgba(239,68,68,0.18);
+    color: #fca5a5;
+    padding: 11px 14px; border-radius: 10px;
+    font-size: 13px; margin-bottom: 18px;
+    line-height: 1.4;
+  }
+
+  /* Botón */
+  .lr-btn {
     width: 100%;
     padding: 14px;
-    background: #1D9E75;
+    background: linear-gradient(135deg, #1D9E75 0%, #178c65 100%);
     color: white; border: none;
     border-radius: 12px;
     font-size: 15px; font-weight: 700;
     font-family: 'DM Sans', sans-serif;
     cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 24px rgba(29,158,117,0.35);
-    letter-spacing: 0.02em;
+    transition: all 0.22s ease;
+    box-shadow: 0 4px 20px rgba(29,158,117,0.38), 0 1px 0 rgba(255,255,255,0.08) inset;
     display: flex; align-items: center; justify-content: center; gap: 8px;
+    letter-spacing: 0.02em;
   }
 
-  .login-btn:hover:not(:disabled) {
-    background: #22b585;
-    box-shadow: 0 6px 32px rgba(29,158,117,0.5);
+  .lr-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #22b585 0%, #1a9d73 100%);
+    box-shadow: 0 6px 28px rgba(29,158,117,0.52);
     transform: translateY(-1px);
   }
 
-  .login-btn:active:not(:disabled) { transform: translateY(0); }
+  .lr-btn:active:not(:disabled) { transform: translateY(0); }
 
-  .login-btn:disabled {
-    background: rgba(29,158,117,0.3);
+  .lr-btn:disabled {
+    background: rgba(29,158,117,0.25);
     cursor: not-allowed;
     box-shadow: none;
   }
 
-  /* Footer del form */
-  .login-form-footer {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 13px;
-    color: rgba(255,255,255,0.2);
-  }
-
-  .login-form-footer span {
-    color: #1D9E75;
-    cursor: pointer;
-    font-weight: 600;
-    transition: color 0.2s;
-  }
-
-  .login-form-footer span:hover { color: #22b585; }
-
   /* Divisor */
-  .login-divider {
+  .lr-div {
     display: flex; align-items: center; gap: 12px;
     margin: 20px 0;
   }
 
-  .login-divider-line {
-    flex: 1; height: 1px;
-    background: rgba(255,255,255,0.06);
-  }
+  .lr-div-line { flex:1; height:1px; background: rgba(255,255,255,0.06); }
 
-  .login-divider-text {
+  .lr-div-txt {
     font-size: 11px; color: rgba(255,255,255,0.15);
     text-transform: uppercase; letter-spacing: 0.1em;
   }
 
-  /* Responsive: ocultar panel izquierdo en móvil */
-  @media (max-width: 768px) {
-    .login-left { display: none; }
-    .login-right { width: 100%; border-left: none; }
+  /* Footer */
+  .lr-footer {
+    text-align: center;
+    font-size: 13px;
+    color: rgba(255,255,255,0.22);
+  }
+
+  .lr-footer-link {
+    color: #1D9E75; cursor: pointer; font-weight: 600;
+    transition: color 0.2s;
+    background: none; border: none;
+    font-size: 13px; font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+  }
+
+  .lr-footer-link:hover { color: #22b585; }
+
+  /* Responsive */
+  @media (max-width: 780px) {
+    .lr-left  { display: none; }
+    .lr-right { width: 100%; padding: 36px 28px; }
   }
 `;
+
+/* SVG icons como componentes simples */
+function IconMail() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="4" width="20" height="16" rx="2"/>
+      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+    </svg>
+  );
+}
+
+function IconLock() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2"/>
+      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+  );
+}
+
+function IconUser() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="8" r="4"/>
+      <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+    </svg>
+  );
+}
+
+function IconTag() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2H2v10l10 10 10-10L12 2z"/>
+      <circle cx="7" cy="7" r="1.5" fill="rgba(255,255,255,0.35)" stroke="none"/>
+    </svg>
+  );
+}
 
 export default function Login() {
   const [mode, setMode]       = useState('login');
@@ -364,6 +441,11 @@ export default function Login() {
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
+  }
+
+  function switchMode(m) {
+    setMode(m);
+    setError('');
   }
 
   async function handleSubmit(e) {
@@ -382,164 +464,219 @@ export default function Login() {
   return (
     <>
       <style>{styles}</style>
-      <div className="login-root">
+      <div className="lr">
 
-        {/* ── PANEL IZQUIERDO ── */}
-        <div className="login-left">
-          <div className="login-left-bg" />
-          <div className="login-left-grid" />
-          <div className="login-left-line" />
+        {/* ── IZQUIERDA ── */}
+        <div className="lr-left">
+          <div className="lr-sep" />
 
-          <div className="login-brand">
-            <span className="login-brand-dot" />
-            <span className="login-brand-name">Canal Reportes</span>
+          <div className="lr-logo">
+            <span className="lr-logo-dot" />
+            <span className="lr-logo-text">Canal Reportes</span>
           </div>
 
-          <div className="login-hero">
-            <div className="login-hero-tag">
-              <span className="login-hero-tag-dot" />
+          <div className="lr-hero">
+            <div className="lr-badge">
+              <span className="lr-badge-blink" />
               Sabana Centro · Cundinamarca
             </div>
-            <h1 className="login-hero-title">
-              Tu voz<br />en el<br /><em>municipio</em>
+            <h1 className="lr-headline">
+              Tu voz<br />
+              en el<br />
+              <span className="outline">municipio</span>
             </h1>
-            <p className="login-hero-desc">
-              Reporta y haz seguimiento a problemas del espacio público.
-              Transparencia y gestión en tiempo real para todos los ciudadanos.
+            <p className="lr-desc">
+              Reporta incidencias del espacio público y haz seguimiento en tiempo real.
+              Transparencia y gestión para toda la comunidad.
             </p>
           </div>
 
-          <div className="login-stats">
-            <div className="login-stat-chip">
-              <div className="login-stat-num" style={{ color: '#1D9E75' }}>24/7</div>
-              <div className="login-stat-label">Disponible</div>
+          <div className="lr-stats">
+            <div className="lr-stat">
+              <div className="lr-stat-n" style={{ color:'#1D9E75' }}>24/7</div>
+              <div className="lr-stat-l">Disponible</div>
             </div>
-            <div className="login-stat-chip">
-              <div className="login-stat-num">100%</div>
-              <div className="login-stat-label">Transparente</div>
+            <div className="lr-stat">
+              <div className="lr-stat-n">100%</div>
+              <div className="lr-stat-l">Transparente</div>
             </div>
-            <div className="login-stat-chip">
-              <div className="login-stat-num" style={{ color: '#2E75B6' }}>Real</div>
-              <div className="login-stat-label">Tiempo real</div>
+            <div className="lr-stat">
+              <div className="lr-stat-n" style={{ color:'#2E75B6' }}>Live</div>
+              <div className="lr-stat-l">Tiempo real</div>
             </div>
           </div>
         </div>
 
-        {/* ── PANEL DERECHO ── */}
-        <div className="login-right">
-          <div className="login-right-inner">
+        {/* ── DERECHA ── */}
+        <div className="lr-right">
+          <div className="lr-form-wrap">
 
-            <div className="login-form-header">
-              <h2 className="login-form-title">
-                {mode === 'login' ? 'Bienvenido de nuevo' : 'Crear cuenta'}
+            <div className="lr-form-top">
+              <p className="lr-form-eyebrow">
+                {mode === 'login' ? 'Acceso ciudadano' : 'Nueva cuenta'}
+              </p>
+              <h2 className="lr-form-title">
+                {mode === 'login' ? 'Bienvenido\nde nuevo' : 'Únete a\nCanal Reportes'}
               </h2>
-              <p className="login-form-sub">
+              <p className="lr-form-sub">
                 {mode === 'login'
                   ? 'Ingresa tus credenciales para continuar'
-                  : 'Regístrate para reportar incidencias'}
+                  : 'Crea tu cuenta y comienza a reportar'}
               </p>
             </div>
 
             {/* Toggle */}
-            <div className="login-toggle">
+            <div className="lr-toggle">
               <button
-                className={`login-toggle-btn ${mode === 'login' ? 'active' : 'inactive'}`}
-                onClick={() => { setMode('login'); setError(''); }}
+                type="button"
+                className={`lr-tab ${mode === 'login' ? 'lr-tab-on' : 'lr-tab-off'}`}
+                onClick={() => switchMode('login')}
               >
                 Ingresar
               </button>
               <button
-                className={`login-toggle-btn ${mode === 'register' ? 'active' : 'inactive'}`}
-                onClick={() => { setMode('register'); setError(''); }}
+                type="button"
+                className={`lr-tab ${mode === 'register' ? 'lr-tab-on' : 'lr-tab-off'}`}
+                onClick={() => switchMode('register')}
               >
                 Registrarse
               </button>
             </div>
 
-            {/* Formulario */}
             <form onSubmit={handleSubmit}>
-              <div className="login-fields">
+              <div className="lr-fields">
 
                 {mode === 'register' && (
-                  <div className="login-field">
-                    <label className="login-field-label">Nombre completo</label>
-                    <span className="login-field-icon">👤</span>
-                    <input
-                      className="login-input"
-                      name="nombre" placeholder="Tu nombre"
-                      value={form.nombre} onChange={handleChange} required
-                    />
+                  <div className="lr-field">
+                    <label className="lr-label">Nombre completo</label>
+                    <div className="lr-input-wrap">
+                      <span className="lr-icon"><IconUser /></span>
+                      <input
+                        className="lr-input"
+                        name="nombre"
+                        placeholder="Tu nombre completo"
+                        value={form.nombre}
+                        onChange={handleChange}
+                        required
+                        autoComplete="name"
+                      />
+                    </div>
                   </div>
                 )}
 
-                <div className="login-field">
-                  <label className="login-field-label">Correo electrónico</label>
-                  <span className="login-field-icon">✉️</span>
-                  <input
-                    className="login-input"
-                    name="email" type="email" placeholder="tu@correo.com"
-                    value={form.email} onChange={handleChange} required
-                  />
+                <div className="lr-field">
+                  <label className="lr-label">Correo electrónico</label>
+                  <div className="lr-input-wrap">
+                    <span className="lr-icon"><IconMail /></span>
+                    <input
+                      className="lr-input"
+                      name="email"
+                      type="email"
+                      placeholder="tu@correo.com"
+                      value={form.email}
+                      onChange={handleChange}
+                      required
+                      autoComplete="email"
+                    />
+                  </div>
                 </div>
 
-                <div className="login-field">
-                  <label className="login-field-label">Contraseña</label>
-                  <span className="login-field-icon">🔒</span>
-                  <input
-                    className="login-input"
-                    name="password" type="password" placeholder="••••••••"
-                    value={form.password} onChange={handleChange} required
-                  />
+                <div className="lr-field">
+                  <label className="lr-label">Contraseña</label>
+                  <div className="lr-input-wrap">
+                    <span className="lr-icon"><IconLock /></span>
+                    <input
+                      className="lr-input"
+                      name="password"
+                      type="password"
+                      placeholder="Mínimo 6 caracteres"
+                      value={form.password}
+                      onChange={handleChange}
+                      required
+                      autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                    />
+                  </div>
                 </div>
 
                 {mode === 'register' && (
-                  <div className="login-field">
-                    <label className="login-field-label">Tipo de cuenta</label>
-                    <span className="login-field-icon">🏷️</span>
-                    <select
-                      className="login-input"
-                      name="rol" value={form.rol} onChange={handleChange}
-                    >
-                      <option value="ciudadano">Ciudadano</option>
-                      <option value="operario">Operario municipal</option>
-                    </select>
+                  <div className="lr-field">
+                    <label className="lr-label">Tipo de cuenta</label>
+                    <div className="lr-input-wrap">
+                      <span className="lr-icon"><IconTag /></span>
+                      <select
+                        className="lr-input"
+                        name="rol"
+                        value={form.rol}
+                        onChange={handleChange}
+                      >
+                        <option value="ciudadano">Ciudadano</option>
+                        <option value="operario">Operario municipal</option>
+                      </select>
+                    </div>
                   </div>
                 )}
               </div>
 
               {error && (
-                <div className="login-error">
-                  <span>⚠️</span> {error}
+                <div className="lr-error">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fca5a5" strokeWidth="2.5" strokeLinecap="round">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="0.5" fill="#fca5a5"/>
+                  </svg>
+                  {error}
                 </div>
               )}
 
-              <button type="submit" className="login-btn" disabled={loading}>
-                {loading
-                  ? <><span>⏳</span> Cargando...</>
-                  : mode === 'login'
-                    ? <><span>→</span> Ingresar</>
-                    : <><span>✓</span> Crear cuenta</>
-                }
+              <button type="submit" className="lr-btn" disabled={loading}>
+                {loading ? (
+                  <>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" style={{ animation:'spin 1s linear infinite' }}>
+                      <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                    </svg>
+                    Cargando...
+                  </>
+                ) : mode === 'login' ? (
+                  <>
+                    Ingresar
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </>
+                ) : (
+                  <>
+                    Crear cuenta
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  </>
+                )}
               </button>
             </form>
 
-            <div className="login-divider">
-              <div className="login-divider-line" />
-              <span className="login-divider-text">o</span>
-              <div className="login-divider-line" />
+            <div className="lr-div">
+              <div className="lr-div-line" />
+              <span className="lr-div-txt">o</span>
+              <div className="lr-div-line" />
             </div>
 
-            <p className="login-form-footer">
+            <p className="lr-footer">
               {mode === 'login' ? '¿No tienes cuenta? ' : '¿Ya tienes cuenta? '}
-              <span onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); }}>
+              <button
+                type="button"
+                className="lr-footer-link"
+                onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}
+              >
                 {mode === 'login' ? 'Regístrate aquí' : 'Inicia sesión'}
-              </span>
+              </button>
             </p>
 
           </div>
         </div>
 
       </div>
+
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+      `}</style>
     </>
   );
 }
