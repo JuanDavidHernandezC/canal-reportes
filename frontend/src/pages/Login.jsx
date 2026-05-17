@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
@@ -529,7 +529,6 @@ function IconTag() {
   );
 }
 
-// Partículas generadas dinámicamente
 const PARTICLES = Array.from({ length: 18 }, (_, i) => ({
   id: i,
   left:  `${5 + (i * 5.5) % 92}%`,
@@ -539,6 +538,9 @@ const PARTICLES = Array.from({ length: 18 }, (_, i) => ({
   opacity: i % 4 === 0 ? 0.8 : 0.5,
 }));
 
+// Configuración estática para evitar recreación de arrays en cada render
+const DECORATIVE_LINES = [0, 1, 2, 3];
+
 export default function Login() {
   const [mode, setMode]       = useState('login');
   const [form, setForm]       = useState({ nombre:'', email:'', password:'', rol:'ciudadano' });
@@ -547,27 +549,55 @@ export default function Login() {
   const { login }  = useAuth();
   const navigate   = useNavigate();
 
-  function handleChange(e) { setForm({ ...form, [e.target.name]: e.target.value }); }
-  function switchMode(m)   { setMode(m); setError(''); }
+  function handleChange(e) { 
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value })); 
+  }
+
+  function switchMode(m) { 
+    setMode(m); 
+    setError('');
+    // Reseteamos el formulario al cambiar de modo para mantener la consistencia de los datos
+    setForm({ nombre: '', email: '', password: '', rol: 'ciudadano' });
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError(''); setLoading(true);
+    if (loading) return;
+
+    setError(''); 
+    setLoading(true);
+
     try {
       const endpoint = mode === 'login' ? '/auth/login' : '/auth/register';
       
-      // Enviamos solo las propiedades requeridas según el modo
       const payload = mode === 'login' 
-        ? { email: form.email, password: form.password }
-        : form;
+        ? { email: form.email.trim(), password: form.password }
+        : { nombre: form.nombre.trim(), email: form.email.trim(), password: form.password, rol: form.rol };
 
       const { data } = await api.post(endpoint, payload);
+      
       login(data.token, data.user);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.error || 'Error de conexión');
-    } finally { setLoading(false); }
+      setError(err.response?.data?.error || 'Error de conexión con el servidor');
+    } finally { 
+      setLoading(false); 
+    }
   }
+
+  // Memorizamos la estructura de las partículas decorativas para rendimiento óptimo
+  const renderedParticles = useMemo(() => (
+    PARTICLES.map(p => (
+      <div key={p.id} className="lp-p" style={{
+        left: p.left,
+        bottom: '-10px',
+        width: p.size, height: p.size,
+        opacity: p.opacity,
+        animationDelay: p.delay,
+        animationDuration: p.dur,
+      }} />
+    ))
+  ), []);
 
   return (
     <>
@@ -580,18 +610,9 @@ export default function Login() {
         <div className="lp-orb3" />
         <div className="lp-orb4" />
 
-        {/* Partículas flotantes */}
+        {/* Partículas flotantes memorizadas */}
         <div className="lp-particles">
-          {PARTICLES.map(p => (
-            <div key={p.id} className="lp-p" style={{
-              left: p.left,
-              bottom: '-10px',
-              width: p.size, height: p.size,
-              opacity: p.opacity,
-              animationDelay: p.delay,
-              animationDuration: p.dur,
-            }} />
-          ))}
+          {renderedParticles}
         </div>
 
         {/* Tarjeta */}
@@ -602,9 +623,9 @@ export default function Login() {
             <div className="lp-visual-glow" />
             <div className="lp-sep" />
 
-            {/* Líneas de luz en movimiento */}
+            {/* Líneas de luz en movimiento utilizando constante estática */}
             <div className="lp-lines">
-              {[0,1,2,3].map(i => (
+              {DECORATIVE_LINES.map(i => (
                 <div key={i} className="lp-line" style={{
                   width: `${200 + i * 60}px`,
                   top: `${15 + i * 22}%`,
@@ -626,7 +647,6 @@ export default function Login() {
               <div className="lp-tech-ring r1" />
               <div className="lp-tech-core">
                 <div className="lp-tech-nodes" />
-                {/* SVG de Escudo/Check en el núcleo para denotar auditoría y reportes */}
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4dd4a0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                   <path d="m9 11 2 2 4-4"/>
@@ -675,7 +695,7 @@ export default function Login() {
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} noValidate>
                 <div className="lp-fields">
 
                   {mode === 'register' && (
