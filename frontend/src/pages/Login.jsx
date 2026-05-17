@@ -214,6 +214,63 @@ const styles = `
     color: rgba(255,255,255,0.8);
   }
 
+  /* NAVE ESPACIAL / ORBE TECNOLÓGICO CSS GENERATIVO */
+  .lp-tech-graphic {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .lp-tech-core {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(29,158,117,0.6) 0%, rgba(3,12,20,0.8) 80%);
+    box-shadow: 0 0 35px rgba(29,158,117,0.5), inset 0 0 15px rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: core-pulse 4s ease-in-out infinite;
+  }
+
+  .lp-tech-ring {
+    position: absolute;
+    border: 1.5px dashed rgba(29,158,117,0.4);
+    border-radius: 50%;
+    animation: tech-spin 25s linear infinite;
+  }
+
+  .lp-tech-ring.r1 { width: 130px; height: 130px; animation-duration: 20s; border-style: dotted; }
+  .lp-tech-ring.r2 { width: 170px; height: 170px; animation-direction: reverse; animation-duration: 35s; border-color: rgba(46,117,182,0.3); }
+  .lp-tech-ring.r3 { width: 210px; height: 210px; border: 1px solid rgba(29,158,117,0.15); }
+
+  .lp-tech-nodes {
+    position: absolute;
+    width: 100%; height: 100%;
+    background: 
+      radial-gradient(circle at 15% 50%, #1D9E75 3px, transparent 4px),
+      radial-gradient(circle at 85% 30%, #2e75b6 2px, transparent 3px),
+      radial-gradient(circle at 50% 12%, #4dd4a0 3px, transparent 4px);
+    opacity: 0.7;
+    animation: tech-spin 40s linear infinite;
+  }
+
+  @keyframes core-pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 35px rgba(29,158,117,0.5); }
+    50% { transform: scale(1.06); box-shadow: 0 0 50px rgba(47,214,162,0.7); }
+  }
+
+  @keyframes tech-spin {
+    100% { transform: rotate(360deg); }
+  }
+
   .lp-visual-bottom { position: relative; z-index: 3; }
 
   .lp-tag {
@@ -264,7 +321,6 @@ const styles = `
     align-items: center;
     justify-content: center;
     padding: 48px 44px;
-    /* Borde superior izquierdo redondeado que combina con la tarjeta */
     border-radius: 0 28px 28px 0;
   }
 
@@ -555,6 +611,21 @@ export default function Login() {
             <div className="lp-visual-top">
               <span className="lp-dot" />
               <span className="lp-brand">Canal Reportes</span>
+            </div>
+
+            {/* GRÁFICO TECNOLÓGICO CENTRAL (ORBE DINÁMICO) */}
+            <div className="lp-tech-graphic">
+              <div className="lp-tech-ring r3" />
+              <div className="lp-tech-ring r2" />
+              <div className="lp-tech-ring r1" />
+              <div className="lp-tech-core">
+                <div className="lp-tech-nodes" />
+                {/* SVG de Escudo/Check en el núcleo para denotar auditoría y reportes */}
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4dd4a0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <path d="m9 11 2 2 4-4"/>
+                </svg>
+              </div>
             </div>
 
             <div className="lp-visual-bottom">
