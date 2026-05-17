@@ -701,51 +701,60 @@ export default function Login() {
                 <div className="lp-heart-ring r2" />
                 <div className="lp-heart-ring r1" />
                 <div className="lp-heart-sparks" />
-                {/* Ícono: ciudad con pin de reporte y check */}
-                <svg className="lp-report-icon" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  {/* Edificio izquierdo */}
-                  <rect x="6" y="28" width="14" height="30" rx="1.5" fill="#0d3d28" stroke="#1DDC82" strokeWidth="1.2"/>
-                  <rect x="9" y="32" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.7"/>
-                  <rect x="14" y="32" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.7"/>
-                  <rect x="9" y="38" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.5"/>
-                  <rect x="14" y="38" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.5"/>
-                  <rect x="9" y="44" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.4"/>
-                  <rect x="14" y="44" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.4"/>
+                {/* Ícono: clipboard reporte + bolígrafo */}
+                <svg className="lp-report-icon" width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-                  {/* Edificio derecho */}
-                  <rect x="52" y="34" width="14" height="24" rx="1.5" fill="#0d3d28" stroke="#1DDC82" strokeWidth="1.2"/>
-                  <rect x="55" y="38" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.7"/>
-                  <rect x="60" y="38" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.7"/>
-                  <rect x="55" y="44" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.5"/>
-                  <rect x="60" y="44" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.5"/>
+                  {/* Sombra suave del clipboard */}
+                  <rect x="14" y="16" width="44" height="56" rx="5" fill="rgba(0,0,0,0.35)"/>
 
-                  {/* Edificio central / alcaldía */}
-                  <rect x="24" y="22" width="24" height="36" rx="2" fill="#0a2e1e" stroke="#1DDC82" strokeWidth="1.5"/>
-                  {/* Frontón */}
-                  <polygon points="22,22 36,12 50,22" fill="#0d3d28" stroke="#1DDC82" strokeWidth="1.2"/>
-                  {/* Columnas */}
-                  <rect x="27" y="22" width="2.5" height="10" fill="#1DDC82" opacity="0.4"/>
-                  <rect x="32" y="22" width="2.5" height="10" fill="#1DDC82" opacity="0.4"/>
-                  <rect x="37" y="22" width="2.5" height="10" fill="#1DDC82" opacity="0.4"/>
-                  <rect x="42" y="22" width="2.5" height="10" fill="#1DDC82" opacity="0.4"/>
-                  {/* Ventanas */}
-                  <rect x="27" y="36" width="5" height="5" rx="0.5" fill="#1DDC82" opacity="0.6"/>
-                  <rect x="34" y="36" width="5" height="5" rx="0.5" fill="#1DDC82" opacity="0.6"/>
-                  <rect x="41" y="36" width="5" height="5" rx="0.5" fill="#1DDC82" opacity="0.6"/>
-                  {/* Puerta */}
-                  <rect x="32" y="46" width="8" height="12" rx="1" fill="#1DDC82" opacity="0.3"/>
+                  {/* Cuerpo del clipboard */}
+                  <rect x="12" y="14" width="44" height="56" rx="5" fill="#0f3d28" stroke="#1DDC82" strokeWidth="1.4"/>
 
-                  {/* Suelo */}
-                  <line x1="4" y1="58" x2="68" y2="58" stroke="#1DDC82" strokeWidth="1.2" opacity="0.5"/>
+                  {/* Clip superior (gancho amarillo-dorado) */}
+                  <rect x="26" y="10" width="16" height="9" rx="3" fill="#f5c842" stroke="#d4a800" strokeWidth="1"/>
+                  <rect x="29" y="13" width="10" height="4" rx="2" fill="#0f3d28" stroke="#d4a800" strokeWidth="0.8"/>
 
-                  {/* Pin de reporte — encima del edificio central */}
-                  <circle cx="36" cy="5" r="6.5" fill="#1DDC82"/>
-                  <circle cx="36" cy="5" r="4" fill="#0a2e1e"/>
-                  {/* Check dentro del pin */}
-                  <polyline points="33.2,5 35.2,7 39,2.5" fill="none" stroke="#1DDC82" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                  {/* Sombra del pin */}
-                  <line x1="36" y1="11" x2="36" y2="14" stroke="#1DDC82" strokeWidth="1.4" strokeLinecap="round" opacity="0.6"/>
-                  <ellipse cx="36" cy="15" rx="3" ry="1.2" fill="#1DDC82" opacity="0.25"/>
+                  {/* Título REPORT */}
+                  <rect x="20" y="26" width="28" height="5" rx="1" fill="#1DDC82" opacity="0.9"/>
+
+                  {/* Líneas de texto */}
+                  <rect x="20" y="35" width="22" height="2.5" rx="1" fill="#1DDC82" opacity="0.35"/>
+                  <rect x="20" y="40" width="26" height="2.5" rx="1" fill="#1DDC82" opacity="0.35"/>
+                  <rect x="20" y="45" width="18" height="2.5" rx="1" fill="#1DDC82" opacity="0.35"/>
+
+                  {/* Gráfico de dona (pie chart) */}
+                  {/* Círculo base */}
+                  <circle cx="34" cy="57" r="8" fill="none" stroke="#1DDC82" strokeWidth="2.5" opacity="0.25"/>
+                  {/* Arco verde ~120° */}
+                  <path d="M34 49 A8 8 0 0 1 40.93 53" fill="none" stroke="#1DDC82" strokeWidth="2.5" strokeLinecap="round"/>
+                  {/* Arco azul ~120° */}
+                  <path d="M40.93 53 A8 8 0 0 1 34 65" fill="none" stroke="#4dd4f0" strokeWidth="2.5" strokeLinecap="round"/>
+                  {/* Arco naranja ~120° */}
+                  <path d="M34 65 A8 8 0 0 1 34 49" fill="none" stroke="#f5a742" strokeWidth="2.5" strokeLinecap="round"/>
+                  {/* Hueco central dona */}
+                  <circle cx="34" cy="57" r="3.5" fill="#0f3d28"/>
+
+                  {/* Sello / stamp */}
+                  <circle cx="48" cy="60" r="5" fill="none" stroke="#1DDC82" strokeWidth="1.2" opacity="0.6"/>
+                  <circle cx="48" cy="60" r="3" fill="none" stroke="#1DDC82" strokeWidth="0.8" opacity="0.4"/>
+                  <polyline points="46,60 47.5,61.5 50.5,57.5" fill="none" stroke="#1DDC82" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" opacity="0.9"/>
+
+                  {/* Bolígrafo — diagonal, encima del clipboard */}
+                  {/* Cuerpo del bolígrafo */}
+                  <g transform="rotate(-38, 62, 52)">
+                    {/* Cuerpo principal rojo */}
+                    <rect x="55" y="30" width="7" height="28" rx="2" fill="#e03030" stroke="#b02020" strokeWidth="0.7"/>
+                    {/* Banda dorada superior */}
+                    <rect x="55" y="30" width="7" height="5" rx="2" fill="#f5c842" stroke="#d4a800" strokeWidth="0.7"/>
+                    {/* Clip del bolígrafo */}
+                    <rect x="60.5" y="31" width="1.5" height="20" rx="0.8" fill="#d4a800"/>
+                    {/* Punta / cono */}
+                    <polygon points="55,58 62,58 58.5,68" fill="#f0f0e0" stroke="#ccc" strokeWidth="0.7"/>
+                    {/* Punta metálica */}
+                    <polygon points="57,64 60,64 58.5,69" fill="#aaa"/>
+                    {/* Punto de tinta */}
+                    <circle cx="58.5" cy="69" r="0.8" fill="#1DDC82"/>
+                  </g>
                 </svg>
               </div>
             </div>
