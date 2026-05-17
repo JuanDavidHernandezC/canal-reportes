@@ -79,9 +79,9 @@ const styles = `
     width: 380px; height: 380px;
     border-radius: 50%;
     background: radial-gradient(circle,
-      rgba(220,80,180,0.25) 0%,
-      rgba(160,0,220,0.15) 30%,
-      rgba(0,200,120,0.08) 55%,
+      rgba(29,220,130,0.2) 0%,
+      rgba(0,180,80,0.12) 30%,
+      rgba(0,120,60,0.06) 55%,
       transparent 70%
     );
     pointer-events: none;
@@ -250,31 +250,30 @@ const styles = `
     100% { transform: rotate(360deg); }
   }
 
-  /* Corazón SVG con neón */
-  .lp-heart-svg {
+  /* Ícono canal de reportes */
+  .lp-report-icon {
     position: relative; z-index: 4;
     filter:
-      drop-shadow(0 0 12px rgba(220,80,180,0.9))
-      drop-shadow(0 0 30px rgba(160,0,220,0.6))
-      drop-shadow(0 0 60px rgba(200,50,200,0.3));
-    animation: heart-beat 3s ease-in-out infinite;
+      drop-shadow(0 0 10px rgba(29,220,130,0.8))
+      drop-shadow(0 0 28px rgba(29,220,130,0.4));
+    animation: report-icon-pulse 4s ease-in-out infinite;
   }
 
-  @keyframes heart-beat {
-    0%,100% { transform: scale(1); filter: drop-shadow(0 0 12px rgba(220,80,180,0.9)) drop-shadow(0 0 30px rgba(160,0,220,0.6)); }
-    50%      { transform: scale(1.08); filter: drop-shadow(0 0 20px rgba(255,100,220,1)) drop-shadow(0 0 50px rgba(180,0,255,0.8)) drop-shadow(0 0 80px rgba(200,50,200,0.5)); }
+  @keyframes report-icon-pulse {
+    0%,100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(29,220,130,0.8)) drop-shadow(0 0 28px rgba(29,220,130,0.4)); }
+    50%      { transform: scale(1.06); filter: drop-shadow(0 0 18px rgba(29,220,130,1)) drop-shadow(0 0 48px rgba(29,220,130,0.6)) drop-shadow(0 0 70px rgba(0,200,100,0.3)); }
   }
 
-  /* Partículas de estrellas alrededor del corazón */
+  /* Partículas de destellos alrededor del ícono */
   .lp-heart-sparks {
     position: absolute; inset: 0; pointer-events: none;
     background:
-      radial-gradient(circle at 20% 30%, rgba(255,200,255,0.8) 1.5px, transparent 2px),
+      radial-gradient(circle at 20% 30%, rgba(29,220,130,0.9) 1.5px, transparent 2px),
       radial-gradient(circle at 80% 20%, rgba(200,255,220,0.8) 1px, transparent 1.5px),
-      radial-gradient(circle at 70% 80%, rgba(180,180,255,0.8) 1.5px, transparent 2px),
-      radial-gradient(circle at 15% 75%, rgba(255,180,200,0.7) 1px, transparent 1.5px),
-      radial-gradient(circle at 90% 60%, rgba(150,255,200,0.8) 1.5px, transparent 2px);
-    animation: sparks-twinkle 3s ease-in-out infinite;
+      radial-gradient(circle at 72% 78%, rgba(100,255,180,0.8) 1.5px, transparent 2px),
+      radial-gradient(circle at 14% 72%, rgba(29,220,130,0.7) 1px, transparent 1.5px),
+      radial-gradient(circle at 88% 58%, rgba(150,255,200,0.8) 1.5px, transparent 2px);
+    animation: sparks-twinkle 4s ease-in-out infinite;
     width: 220px; height: 220px;
     top: 50%; left: 50%;
     transform: translate(-50%,-50%);
@@ -282,7 +281,7 @@ const styles = `
   }
 
   @keyframes sparks-twinkle {
-    0%,100% { opacity: 0.6; transform: translate(-50%,-50%) rotate(0deg); }
+    0%,100% { opacity: 0.5; transform: translate(-50%,-50%) rotate(0deg); }
     50%      { opacity: 1;   transform: translate(-50%,-50%) rotate(180deg); }
   }
 
@@ -702,20 +701,51 @@ export default function Login() {
                 <div className="lp-heart-ring r2" />
                 <div className="lp-heart-ring r1" />
                 <div className="lp-heart-sparks" />
-                <svg className="lp-heart-svg" width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <radialGradient id="hg" cx="50%" cy="40%" r="60%">
-                      <stop offset="0%" stopColor="#ff80ea"/>
-                      <stop offset="50%" stopColor="#d040ff"/>
-                      <stop offset="100%" stopColor="#8000e0"/>
-                    </radialGradient>
-                  </defs>
-                  <path
-                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                    fill="url(#hg)"
-                    stroke="rgba(255,150,255,0.4)"
-                    strokeWidth="0.5"
-                  />
+                {/* Ícono: ciudad con pin de reporte y check */}
+                <svg className="lp-report-icon" width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  {/* Edificio izquierdo */}
+                  <rect x="6" y="28" width="14" height="30" rx="1.5" fill="#0d3d28" stroke="#1DDC82" strokeWidth="1.2"/>
+                  <rect x="9" y="32" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.7"/>
+                  <rect x="14" y="32" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.7"/>
+                  <rect x="9" y="38" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.5"/>
+                  <rect x="14" y="38" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.5"/>
+                  <rect x="9" y="44" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.4"/>
+                  <rect x="14" y="44" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.4"/>
+
+                  {/* Edificio derecho */}
+                  <rect x="52" y="34" width="14" height="24" rx="1.5" fill="#0d3d28" stroke="#1DDC82" strokeWidth="1.2"/>
+                  <rect x="55" y="38" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.7"/>
+                  <rect x="60" y="38" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.7"/>
+                  <rect x="55" y="44" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.5"/>
+                  <rect x="60" y="44" width="3" height="3" rx="0.5" fill="#1DDC82" opacity="0.5"/>
+
+                  {/* Edificio central / alcaldía */}
+                  <rect x="24" y="22" width="24" height="36" rx="2" fill="#0a2e1e" stroke="#1DDC82" strokeWidth="1.5"/>
+                  {/* Frontón */}
+                  <polygon points="22,22 36,12 50,22" fill="#0d3d28" stroke="#1DDC82" strokeWidth="1.2"/>
+                  {/* Columnas */}
+                  <rect x="27" y="22" width="2.5" height="10" fill="#1DDC82" opacity="0.4"/>
+                  <rect x="32" y="22" width="2.5" height="10" fill="#1DDC82" opacity="0.4"/>
+                  <rect x="37" y="22" width="2.5" height="10" fill="#1DDC82" opacity="0.4"/>
+                  <rect x="42" y="22" width="2.5" height="10" fill="#1DDC82" opacity="0.4"/>
+                  {/* Ventanas */}
+                  <rect x="27" y="36" width="5" height="5" rx="0.5" fill="#1DDC82" opacity="0.6"/>
+                  <rect x="34" y="36" width="5" height="5" rx="0.5" fill="#1DDC82" opacity="0.6"/>
+                  <rect x="41" y="36" width="5" height="5" rx="0.5" fill="#1DDC82" opacity="0.6"/>
+                  {/* Puerta */}
+                  <rect x="32" y="46" width="8" height="12" rx="1" fill="#1DDC82" opacity="0.3"/>
+
+                  {/* Suelo */}
+                  <line x1="4" y1="58" x2="68" y2="58" stroke="#1DDC82" strokeWidth="1.2" opacity="0.5"/>
+
+                  {/* Pin de reporte — encima del edificio central */}
+                  <circle cx="36" cy="5" r="6.5" fill="#1DDC82"/>
+                  <circle cx="36" cy="5" r="4" fill="#0a2e1e"/>
+                  {/* Check dentro del pin */}
+                  <polyline points="33.2,5 35.2,7 39,2.5" fill="none" stroke="#1DDC82" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                  {/* Sombra del pin */}
+                  <line x1="36" y1="11" x2="36" y2="14" stroke="#1DDC82" strokeWidth="1.4" strokeLinecap="round" opacity="0.6"/>
+                  <ellipse cx="36" cy="15" rx="3" ry="1.2" fill="#1DDC82" opacity="0.25"/>
                 </svg>
               </div>
             </div>
