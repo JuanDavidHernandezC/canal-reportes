@@ -14,26 +14,31 @@ const styles = `
     color: white;
   }
 
-  /* ── TOP BAR (botón volver) ── */
-  .pub-topbar {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center;
-    padding: 14px 24px;
-    background: rgba(8,16,28,0.75);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+  /* ── HERO ── */
+  .pub-hero {
+    position: relative;
+    overflow: hidden;
+    /* padding-top generoso para que el navbar global fijo no tape el contenido */
+    padding: 80px 24px 72px;
+    text-align: center;
+  }
+
+  /* Botón volver — posicionado dentro del flujo del hero, arriba a la izquierda */
+  .pub-back-row {
+    position: absolute;
+    top: 20px; left: 24px;
+    z-index: 10;
   }
 
   .btn-back {
-    display: inline-flex; align-items: center; gap: 9px;
+    display: inline-flex; align-items: center; gap: 8px;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
-    color: rgba(255,255,255,0.65);
-    padding: 8px 16px 8px 12px;
+    color: rgba(255,255,255,0.6);
+    padding: 7px 14px 7px 10px;
     border-radius: 10px;
     text-decoration: none;
-    font-weight: 500; font-size: 13.5px;
+    font-weight: 500; font-size: 13px;
     font-family: 'DM Sans', sans-serif;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -49,22 +54,14 @@ const styles = `
 
   .btn-back-arrow {
     display: flex; align-items: center; justify-content: center;
-    width: 22px; height: 22px; border-radius: 6px;
-    background: rgba(255,255,255,0.06);
-    font-size: 13px;
+    width: 20px; height: 20px; border-radius: 6px;
+    background: rgba(255,255,255,0.07);
+    font-size: 12px;
     transition: background 0.2s;
   }
 
   .btn-back:hover .btn-back-arrow {
     background: rgba(29,158,117,0.2);
-  }
-
-  /* ── HERO ── */
-  .pub-hero {
-    position: relative;
-    overflow: hidden;
-    padding: 120px 24px 72px; /* extra top por el topbar fixed */
-    text-align: center;
   }
 
   .pub-hero-bg {
@@ -226,8 +223,7 @@ const styles = `
   .pub-filter-btn.active {
     background: rgba(255,255,255,0.08);
     border-color: rgba(255,255,255,0.2);
-    color: white;
-    font-weight: 600;
+    color: white; font-weight: 600;
   }
 
   .pub-filter-btn.active-recibido   { background: rgba(29,158,117,0.15); border-color: rgba(29,158,117,0.35); color: #1D9E75; }
@@ -301,7 +297,7 @@ const styles = `
   .estado-resuelto   { background: rgba(46,117,182,0.15); color: #2E75B6; }
   .estado-default    { background: rgba(136,136,136,0.15); color: #888; }
 
-  /* ── EMPTY ── */
+  /* ── EMPTY / LOADING ── */
   .pub-empty {
     text-align: center; padding: 80px 20px;
     color: rgba(255,255,255,0.2);
@@ -319,9 +315,9 @@ const styles = `
 `;
 
 const estadoConfig = {
-  recibido:   { label: 'Recibido',    cls: 'estado-recibido',   tipoColor: '#1D9E75' },
-  en_proceso: { label: 'En proceso',  cls: 'estado-en_proceso', tipoColor: '#eab308' },
-  resuelto:   { label: 'Resuelto',    cls: 'estado-resuelto',   tipoColor: '#2E75B6' },
+  recibido:   { label: 'Recibido',   cls: 'estado-recibido' },
+  en_proceso: { label: 'En proceso', cls: 'estado-en_proceso' },
+  resuelto:   { label: 'Resuelto',   cls: 'estado-resuelto' },
 };
 
 const tipoIcon  = { infraestructura: '🏗️', basuras: '🗑️', alumbrado: '💡', otro: '📌' };
@@ -342,14 +338,14 @@ export default function Public() {
 
   useEffect(() => {
     api.get('/reports/public')
-      .then(res => setReportes(res.data))
+      .then(res => setReportes(Array.isArray(res.data) ? res.data : []))
       .finally(() => setLoading(false));
   }, []);
 
   const filtrados = filtro === 'todos' ? reportes : reportes.filter(r => r.estado === filtro);
 
   const counts = {
-    total:     reportes.length,
+    total:      reportes.length,
     en_proceso: reportes.filter(r => r.estado === 'en_proceso').length,
     resuelto:   reportes.filter(r => r.estado === 'resuelto').length,
   };
@@ -365,18 +361,19 @@ export default function Public() {
       <style>{styles}</style>
       <div className="pub-root">
 
-        {/* Top bar con botón volver */}
-        <div className="pub-topbar">
-          <Link to="/dashboard" className="btn-back">
-            <span className="btn-back-arrow">←</span>
-            Volver al Dashboard
-          </Link>
-        </div>
-
-        {/* Hero */}
+        {/* Hero con botón volver integrado */}
         <div className="pub-hero">
           <div className="pub-hero-bg" />
           <div className="pub-hero-grid" />
+
+          {/* Botón volver — dentro del hero, no interfiere con el navbar global */}
+          <div className="pub-back-row">
+            <button className="btn-back" onClick={() => navigate('/dashboard')}>
+              <span className="btn-back-arrow">←</span>
+              Volver al Dashboard
+            </button>
+          </div>
+
           <div className="pub-hero-content">
             <div className="pub-hero-badge">
               <span className="pub-hero-badge-dot" />
@@ -440,7 +437,7 @@ export default function Public() {
           ) : (
             <div className="pub-list">
               {filtrados.map((r, i) => {
-                const est = estadoConfig[r.estado] || { label: r.estado, cls: 'estado-default', tipoColor: '#888' };
+                const est = estadoConfig[r.estado] || { label: r.estado, cls: 'estado-default' };
                 const tc  = tipoColor[r.tipo] || '#888';
                 return (
                   <div key={r.id} className="pub-card" style={{ animationDelay: `${i * 0.04}s` }}>
@@ -450,7 +447,9 @@ export default function Public() {
                         <p className="pub-card-tipo" style={{ color: tc }}>{r.tipo}</p>
                         <h3 className="pub-card-title">{r.titulo}</h3>
                         <p className="pub-card-meta">
-                          {new Date(r.created_at).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' })}
+                          {new Date(r.created_at).toLocaleDateString('es-CO', {
+                            day: '2-digit', month: 'short', year: 'numeric',
+                          })}
                           {r.latitud && <span className="pub-card-geo">· 📍 Con ubicación</span>}
                         </p>
                       </div>
@@ -462,6 +461,7 @@ export default function Public() {
             </div>
           )}
         </div>
+
       </div>
     </>
   );
