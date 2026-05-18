@@ -17,9 +17,11 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 
 // Rutas
+app.use('/api/users',    require('./routes/users.routes'));
 app.use('/api/auth',     require('./routes/auth.routes'));
 app.use('/api/reports',  require('./routes/reports.routes'));
 app.use('/api/messages', require('./routes/messages.routes'));
+
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', time: new Date() }));

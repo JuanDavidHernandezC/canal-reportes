@@ -790,7 +790,6 @@ export default function Login() {
                         <span className="lp-icon"><IconTag /></span>
                         <select className="lp-input" name="rol" value={form.rol} onChange={handleChange}>
                           <option value="ciudadano">Ciudadano</option>
-                          <option value="operario">Operario municipal</option>
                         </select>
                       </div>
                     </div>
