@@ -785,7 +785,7 @@ export default function Login() {
 
                   {mode === 'register' && (
                     <div className="lp-field">
-                      <label className="lp-label">Tipo de cuenta</label>
+                      <label className="lp-label">Reporta como</label>
                       <div className="lp-input-wrap">
                         <span className="lp-icon"><IconTag /></span>
                         <select className="lp-input" name="rol" value={form.rol} onChange={handleChange}>
