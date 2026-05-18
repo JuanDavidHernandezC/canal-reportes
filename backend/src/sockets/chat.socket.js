@@ -123,6 +123,7 @@ ${estadoLabels[reporte.estado] || reporte.estado}
   if (
     msg.includes('gracias') ||
     msg.includes('muchas gracias') ||
+    msg.includes('grazias') ||
     msg.includes('thank')
   ) {
     return `🙌 ¡Con gusto!
